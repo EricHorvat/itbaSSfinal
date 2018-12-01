@@ -34,7 +34,8 @@ public class SocialModelSimulator {
 	public void loop() {
 		Map<RoastedParticle, Set<RoastedParticle>> neighbours = cellIndexMethod.getNeighboursMap();
 		grid.set(particles);
-        Particle ball = new RoasterParticle(5, 5, 0,0, 0, 1, 0.1);
+		Particle ball = new RoasterParticle(666, 5, 5,0, 0, 1, 0.1);
+		//Map<RoastedParticle, Set<RoastedParticle>> neighbours = cellIndexMethod.getNeighboursMap();
 		particles.forEach(p -> {
 			Pair force = p.getOwnForce();
 			//grid.getNeighbors(p).forEach(q -> {
