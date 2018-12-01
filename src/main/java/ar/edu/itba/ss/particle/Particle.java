@@ -7,7 +7,7 @@ public class Particle {
 	private int id;
 	Pair position;
 	Pair velocity;
-	Pair aceleration;
+	Pair acceleration;
 	Pair lastAceleration;
 	private double radius;
 	private double mass;
@@ -18,7 +18,7 @@ public class Particle {
 		this.id = id;
 		this.position = new Pair(x, y);
 		this.velocity = new Pair(vx, vy);
-		this.aceleration= new Pair(0, 0);
+		this.acceleration = new Pair(0, 0);
 		this.lastAceleration = new Pair(0, 0);
 		this.mass = m;
 		this.radius = r;
@@ -68,8 +68,8 @@ public class Particle {
 	}
 	
 	public void updateAceleration(Pair force) {
-		this.lastAceleration = aceleration;
-		this.aceleration = new Pair(force.x/mass, force.y/mass);
+		this.lastAceleration = acceleration;
+		this.acceleration = new Pair(force.x/mass, force.y/mass);
 	}
 
 	

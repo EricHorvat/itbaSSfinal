@@ -88,8 +88,8 @@ public class SocialModelSimulator {
 	}
 	
 	private void updatePosition(RoastedParticle p, double dt) {
-		double rx = p.position.x + p.velocity.x * dt + 2.0/3 * p.aceleration.x * Math.pow(dt, 2) - 1.0 / 6 * p.lastAceleration.x * Math.pow(dt,2);
-		double ry = p.position.y + p.velocity.y * dt + 2.0/3 * p.aceleration.y * Math.pow(dt, 2) - 1.0 / 6 * p.lastAceleration.y * Math.pow(dt,2);
+		double rx = p.position.x + p.velocity.x * dt + 2.0/3 * p.acceleration.x * Math.pow(dt, 2) - 1.0 / 6 * p.lastAceleration.x * Math.pow(dt,2);
+		double ry = p.position.y + p.velocity.y * dt + 2.0/3 * p.acceleration.y * Math.pow(dt, 2) - 1.0 / 6 * p.lastAceleration.y * Math.pow(dt,2);
 
 		p.updatePosition(rx, ry);
 		if(ry<0){
@@ -98,8 +98,8 @@ public class SocialModelSimulator {
 	}
 
 	private void updateVelocity(RoastedParticle p, double dt) {
-		double vx = p.velocity.x + 2.0/3 * p.aceleration.x * dt - 1.0 / 6 * p.lastAceleration.x * dt;
-		double vy = p.velocity.y + 2.0/3 * p.aceleration.y * dt - 1.0 / 6 * p.lastAceleration.y * dt;
+		double vx = p.velocity.x + 2.0/3 * p.acceleration.x * dt - 1.0 / 6 * p.lastAceleration.x * dt;
+		double vy = p.velocity.y + 2.0/3 * p.acceleration.y * dt - 1.0 / 6 * p.lastAceleration.y * dt;
 		p.updateVelocity(vx, vy);
 	}
 	

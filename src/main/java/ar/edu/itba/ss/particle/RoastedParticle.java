@@ -8,7 +8,8 @@ public class RoastedParticle extends Particle {
 	private Pair targetPosition;
 	private double pressure;
 	final private static double socialForceFactor = 1;
-	
+	private double throwingVelocity;
+
 	public RoastedParticle(int id, double x, double y, double vx, double vy, double m, double r, int team) {
 		super(id, x, y, vx, vy, m, r, team, socialForceFactor);
 		lastPosition = new Pair(0,0);
@@ -91,7 +92,12 @@ public class RoastedParticle extends Particle {
 	private double getArea() {
 		return 2 * Math.PI * getRadius();
 	}
-	
+
+	public double getThrowingVelocity() {
+		return throwingVelocity;
+	}
+
+
 	@Override
 	public String getInfo() {
 		return super.getInfo() + " " + getPressure();
