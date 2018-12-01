@@ -1,0 +1,15 @@
+Actualizar velocidad de la pelota en funcion de la fuerza de roce.
+Lista de pelotas
+Resolver la colision, eliminar al player, cambiar status de la pelota a idle, hacer que los players tengan chance de agarrarla.
+En loop, ver segun estado de la pelota que pasa, si idle left equipo left la va a buscar, etc
+Si hay colision y pelota parada, que la lancen, actualizar estado.
+Reducir fuerzas propulsoras en funcion del timepo de simulacion.
+Resolver tiro de la pelota, meter factor de desgaste.
+Guardar timestamp de los quemados, quizas por equipo.
+Hacer que si no me pega, no me mueva.
+Poner time limit al match.
+Actualizar target position si la pelota esta parada, casi contrario actualizar a posicion del player cada vez.
+Resolver caso en que N pelotas me pegan |.| ? Elegir una random para esquivar.
+Flaggear cell index method.
+Probar diversos DT de simulacion
+Poner una cota maxima a la acelearcion/velocidad de un player.
