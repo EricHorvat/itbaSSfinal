@@ -14,7 +14,6 @@ public class SocialModelSimulator {
 
 	private List<RoastedParticle> particles;
 	private double dt;
-	private CellIndexMethod<RoastedParticle> cellIndexMethod;
 	Grid<RoastedParticle> grid;
 	private LinkedList<RoastedParticle> toRemove;
 
@@ -22,7 +21,6 @@ public class SocialModelSimulator {
 		this.particles = particles;
 		this.dt = dt;
 		estimateInitialLastPosition();
-		cellIndexMethod = new CellIndexMethod<>(particles, 2*W, 2.3, 1);
 		toRemove = new LinkedList<>();
 		grid = new ParticleGrid<>(5, L, 1, false);
 	}
@@ -32,7 +30,6 @@ public class SocialModelSimulator {
 	}
 
 	public void loop() {
-		//Map<RoastedParticle, Set<RoastedParticle>> neighbours = cellIndexMethod.getNeighboursMap();
 		grid.set(particles);
 		particles.forEach(p -> {
 			Pair force = p.getOwnForce();
