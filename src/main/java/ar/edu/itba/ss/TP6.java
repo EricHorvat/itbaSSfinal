@@ -14,7 +14,7 @@ import static ar.edu.itba.ss.data.Data.*;
 
 public class TP6 {
 
-    private static final Random random = new Random();
+	private static final Random random = new Random();
 
 	private static double getRandomNumber(double min, double max){
 		return random.nextDouble() * (max - min) + min;

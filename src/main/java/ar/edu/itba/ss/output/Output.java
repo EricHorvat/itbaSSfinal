@@ -4,61 +4,64 @@ import ar.edu.itba.ss.particle.Particle;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static ar.edu.itba.ss.data.Data.D;
-import static ar.edu.itba.ss.data.Data.RAD_MAX;
-import static ar.edu.itba.ss.data.Data.W;
+import static ar.edu.itba.ss.data.Data.*;
 
 public class Output {
 
 	private String fileName;
 	private int c = 0;
-
+	private List<String> borderParticles;
 
 	public Output(String fileName) {
 		this.fileName = "./output/"+fileName;
+		borderParticles = borders();
 	}
 
 	public void printState(List<? extends Particle> particles) {
 		List<String> lines = new LinkedList<>();
-		lines.add(String.valueOf(particles.size()));
+		lines.add(String.valueOf(particles.size() + borderParticles.size()));
 		lines.add(""+c);
 		c++;
 		for (Particle p : particles) {
 			lines.add(p.getInfo());
 		}
-		lines.set(0, String.valueOf(Integer.valueOf(lines.get(0)) + borders(lines)));
+		lines.addAll(borderParticles);
 		writeFile(lines);
 	}
 
-	private int borders(List<String> lines){
-        double x = 0.0;
-        int count = 0;
-        while(x <= W){
-			if ( ! (((W-D)/2.0 < x) && ( x < (W+D)/2.0))){
-				lines.add("-1 "+x+" 4.0 "+RAD_MAX/10.0+" 1 0 0");
-				count++;
+	private List<String> borders(){
+		List<String> borderLines = new ArrayList<>();
+		double[] YsVaryingX = {0,L};
+		double[] XsVaryingY = {0,W,2*W};
+		for (double x: XsVaryingY) {
+			double y = 0;
+			while(y <= L){
+				borderLines.add("-1 "+ x + " " + y + " " +RAD_MAX/10.0+" 1 0 0");
+				y += RAD_MAX/10.0;
 			}
-			x += RAD_MAX/10.0;
 		}
-
-		lines.add("-1 0.0 0.0 "+RAD_MAX/10000.0+" 1 0 0");
-        lines.add("-1 20.0 0.0 "+RAD_MAX/10000.0+" 1 0 0");
-        lines.add("-1 0.0 24.0 "+RAD_MAX/10000.0+" 1 0 0");
-        lines.add("-1 20.0 24.0 "+RAD_MAX/10000.0+" 1 0 0");
-
-        return 4+count;
-    }
+		for (double y: YsVaryingX) {
+			double x = 0;
+			while(x <= 2*W){
+				borderLines.add("-1 "+ x + " " + y + " " +RAD_MAX/10.0+" 1 0 0");
+				x += RAD_MAX/10.0;
+			}
+		}
+		
+		return borderLines;
+	}
 
     private void writeFile(List<String> lines) {
 		try {
-            FileWriter fw = new FileWriter(fileName, true);
-            for (String line: lines) {
-                fw.write(line + "\n");
-            }
-            fw.close();
+			FileWriter fw = new FileWriter(fileName, true);
+			for (String line: lines) {
+				fw.write(line + "\n");
+			}
+			fw.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

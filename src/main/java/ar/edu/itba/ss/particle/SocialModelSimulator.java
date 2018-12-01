@@ -11,16 +11,12 @@ public class SocialModelSimulator {
 	private List<RoastedParticle> particles;
 	private double dt;
 	private CellIndexMethod<RoastedParticle> cellIndexMethod;
-	private List<RoastedParticle> borderParticles;
 	private LinkedList<RoastedParticle> toRemove;
 
 	public SocialModelSimulator(List<RoastedParticle> particles, double dt) {
 		this.particles = particles;
 		this.dt = dt;
 		estimateInitialLastPosition();
-		borderParticles = new LinkedList<>();
-		borderParticles.add(new RoastedParticle(0, (W - D) / 2.0, floorLevel, 0, 0, 0, 0));
-		borderParticles.add(new RoastedParticle(0, (W + D) / 2.0, floorLevel, 0, 0, 0, 0));
 		cellIndexMethod = new CellIndexMethod<>(particles, L + floorLevel, 2.2, 1);
 		toRemove = new LinkedList<>();
 	}
@@ -73,11 +69,14 @@ public class SocialModelSimulator {
 		}
 		if (Math.abs(p.position.y - floorLevel) < p.getRadius()) {
 			if (inDoor(p)) {
+				/* TODO REFACTOR THIS
 				for (RoastedParticle borderParticle : borderParticles) {
+				 
 					Pair[] forceComponents = p.getForce(borderParticle);
 					sum.add(Pair.sum(forceComponents[0], forceComponents[1]));
 					p.addPressure(forceComponents[0]);
 				}
+				*/
 			} else {
 				Pair[] force = SocialModel.checkWallBottom(p);
 				sum.add(Pair.sum(force[0], force[1]));
