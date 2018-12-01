@@ -17,7 +17,7 @@ public class SocialModelSimulator {
 		this.particles = particles;
 		this.dt = dt;
 		estimateInitialLastPosition();
-		cellIndexMethod = new CellIndexMethod<>(particles, L, 2.3, 1);
+		cellIndexMethod = new CellIndexMethod<>(particles, 2*W, 2.3, 1);
 		toRemove = new LinkedList<>();
 	}
 
@@ -57,12 +57,12 @@ public class SocialModelSimulator {
 
 	private Pair wallForce(RoastedParticle p) {
 		Pair sum = new Pair(0, 0);
-		if (p.position.x - p.getRadius() < 0 && p.position.y > 0) {
+		if (p.position.x - p.getRadius() + W * p.getTeam() < 0 && p.position.y > 0) {
 			Pair[] force = SocialModel.checkWallLeft(p);
 			sum.add(Pair.sum(force[0], force[1]));
 			p.addPressure(force[0]);
 		}
-		if (p.position.x + p.getRadius() > W && p.position.y > 0) {
+		if (p.position.x + p.getRadius() - W * p.getTeam() > W  && p.position.y > 0) {
 			Pair[] force = SocialModel.checkWallRight(p);
 			sum.add(Pair.sum(force[0], force[1]));
 			p.addPressure(force[0]);

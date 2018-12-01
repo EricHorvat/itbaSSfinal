@@ -8,10 +8,11 @@ public class RoastedParticle extends Particle{
 	private Pair targetPosition;
 	private double pressure;
 	
-	public RoastedParticle(int id, double x, double y, double vx, double vy, double m, double r) {
-		super(id, x, y, vx, vy, m, r);
+	public RoastedParticle(int id, double x, double y, double vx, double vy, double m, double r, int team) {
+		super(id, x, y, vx, vy, m, r, team);
 		lastPosition = new Pair(0,0);
-		targetPosition = new Pair(W / 2, 0);
+		//targetPosition = new Pair(W / 2, 0);
+		targetPosition = new Pair(W, L);
 	}
 	
 	public Pair getOwnForce() {

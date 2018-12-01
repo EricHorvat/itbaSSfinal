@@ -5,12 +5,12 @@ import static ar.edu.itba.ss.data.Data.*;
 public class SocialModel {
 
 	public static Pair[] checkWallRight(Particle p) {
-		double eps = p.getX() - W + p.getRadius();
+		double eps = p.getX() - W * (1 + p.getTeam()) + p.getRadius();
 		return getContactForce(p.getVelocity(), eps, new Pair(1, 0), new Pair(0, 1));
 	}
 
 	public static Pair[] checkWallLeft(Particle p) {
-		double eps = p.getRadius() - p.getX();
+		double eps = p.getRadius() - p.getX() + W * p.getTeam();
 		return getContactForce(p.getVelocity(), eps, new Pair(-1, 0), new Pair(0, -1));
 	}
 	

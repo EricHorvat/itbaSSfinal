@@ -9,9 +9,10 @@ public class Particle {
 	Pair lastAceleration;
 	private double radius;
 	private double mass;
+	private int team;
 	
 
-	Particle(int id, double x, double y, double vx, double vy, double m, double r) {
+	Particle(int id, double x, double y, double vx, double vy, double m, double r, int team) {
 		this.id = id;
 		this.position = new Pair(x, y);
 		this.velocity = new Pair(vx, vy);
@@ -19,6 +20,7 @@ public class Particle {
 		this.lastAceleration = new Pair(0, 0);
 		this.mass = m;
 		this.radius = r;
+		this.team = team;
 	}
 
 	public int getId() {
@@ -44,9 +46,13 @@ public class Particle {
 	public double getMass(){
 		return mass;
 	}
-
+	
 	public double getRadius() {
 		return radius;
+	}
+	
+	public int getTeam() {
+		return team;
 	}
 	
 	public void updatePosition(double x, double y) {

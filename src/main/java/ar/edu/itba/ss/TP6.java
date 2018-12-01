@@ -24,7 +24,7 @@ public class TP6 {
 		double r = getRandomNumber(RAD_MIN, RAD_MAX) / 2.0;
 		double x = getRandomNumber(0, W - 2 * r) + team_index * W +  r;
 		double y = getRandomNumber(0, L - 2 * r) + r;
-		return new RoastedParticle(id_count, x, y, 0, 0, mass, r);
+		return new RoastedParticle(id_count, x, y, 0, 0, mass, r, team_index);
 	}
 
 	private static List<List<RoastedParticle>> generateTeams() {
