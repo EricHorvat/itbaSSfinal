@@ -2,7 +2,6 @@ package ar.edu.itba.ss;
 
 import ar.edu.itba.ss.output.Output;
 import ar.edu.itba.ss.output.OutputStat;
-import ar.edu.itba.ss.particle.EscapingParticle;
 import ar.edu.itba.ss.particle.Particle;
 import ar.edu.itba.ss.particle.RoastedParticle;
 import ar.edu.itba.ss.particle.SocialModelSimulator;
@@ -31,10 +30,10 @@ public class TP6 {
 	private static List<List<RoastedParticle>> generateTeams() {
 		List<List<RoastedParticle>> teams = new ArrayList<>();
 		boolean overlap;
-		id_count = 1;
 		for (int i = 0; i < 2; i++) {
+			id_count = 1 + N * i;
 			List<RoastedParticle> team = new ArrayList<>();
-			while (id_count - 1 < N) {
+			while (id_count - 1 < N * (i + 1)) {
 				overlap = false;
 				RoastedParticle newParticle = createRandomParticle(i);
 				for (RoastedParticle otherParticle : team) {
@@ -119,9 +118,9 @@ public class TP6 {
 		System.out.println(System.currentTimeMillis() - timee);
 	}
 
-	private static int getDifPeople(List<EscapingParticle> particles) {
+	private static int getDifPeople(List<RoastedParticle> particles) {
 		int diff = 0;
-		for (EscapingParticle particle : particles) {
+		for (RoastedParticle particle : particles) {
 			if (particle.getLastPosition().y > floorLevel && particle.getPosition().y <= floorLevel) {
 				diff += 1;
 			}
