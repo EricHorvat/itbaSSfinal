@@ -1,12 +1,9 @@
 package ar.edu.itba.ss.output;
 
-import ar.edu.itba.ss.particle.EscapingParticle;
 import ar.edu.itba.ss.particle.Particle;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
