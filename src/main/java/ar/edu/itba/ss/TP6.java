@@ -69,7 +69,6 @@ public class TP6 {
 		int totalDiff = 0;
 
 		while (teamsSocialModelSimulator.stream().noneMatch(team -> team.escapingParticles() == 0)) {
-			
 			if (lastTime + dt2 < time) {
 				List<RoastedParticle> particles = teams.stream().flatMap(List::stream).collect(Collectors.toList());
 				ovitoFile.printState(particles);

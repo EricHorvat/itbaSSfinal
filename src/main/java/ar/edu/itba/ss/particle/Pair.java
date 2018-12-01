@@ -54,9 +54,11 @@ public class Pair {
 	}
 	
 	static public double dist2(Pair p1, Pair p2){
-		return abs2(less(p1, p2));
+		double distX = (p1.x - p2.x);
+		double distY = (p1.y - p2.y);
+		return distX * distX + distY * distY;
 	}
-	
+
 	static public double internalProd(Pair p1, Pair p2){
 		return p1.x*p2.x+p1.y*p2.y;
 	}
@@ -71,4 +73,11 @@ public class Pair {
 		this.y = y;
 	}
 
+	public double getX() {
+		return x;
+	}
+
+	public double getY() {
+		return y;
+	}
 }

@@ -2,7 +2,7 @@ package ar.edu.itba.ss.particle;
 
 import static ar.edu.itba.ss.data.Data.*;
 
-public class RoastedParticle extends Particle{
+public class RoastedParticle extends Particle {
 	
 	private Pair lastPosition;
 	private Pair targetPosition;

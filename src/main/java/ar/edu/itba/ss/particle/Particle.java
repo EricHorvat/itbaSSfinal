@@ -1,5 +1,7 @@
 package ar.edu.itba.ss.particle;
 
+import java.util.Objects;
+
 public class Particle {
 	
 	private int id;
@@ -74,17 +76,17 @@ public class Particle {
 		return Pair.dist2(p.position, q.position) <= Math.pow(p.getRadius()+q.getRadius(),2);
 	}
 
+	public double dist2(Particle particle) {
+		return Pair.dist2(this.position, particle.position);
+	}
+
 	public double getSpeed() {
 		return velocity.abs();
 	}
 
-
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + id;
-		return result;
+		return Objects.hash(getId());
 	}
 
 	@Override

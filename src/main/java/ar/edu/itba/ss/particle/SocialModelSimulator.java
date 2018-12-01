@@ -1,8 +1,12 @@
 package ar.edu.itba.ss.particle;
 
 import ar.edu.itba.ss.cell.CellIndexMethod;
+import ar.edu.itba.ss.cell.Grid;
+import ar.edu.itba.ss.cell.ParticleGrid;
 
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static ar.edu.itba.ss.data.Data.*;
 
@@ -11,6 +15,7 @@ public class SocialModelSimulator {
 	private List<RoastedParticle> particles;
 	private double dt;
 	private CellIndexMethod<RoastedParticle> cellIndexMethod;
+	Grid<RoastedParticle> grid;
 	private LinkedList<RoastedParticle> toRemove;
 
 	public SocialModelSimulator(List<RoastedParticle> particles, double dt) {
@@ -19,38 +24,34 @@ public class SocialModelSimulator {
 		estimateInitialLastPosition();
 		cellIndexMethod = new CellIndexMethod<>(particles, 2*W, 2.3, 1);
 		toRemove = new LinkedList<>();
+		grid = new ParticleGrid<>(5, L, 1);
 	}
 
 	private void estimateInitialLastPosition() {
-		for (RoastedParticle p : particles) {
-			p.updateLastPosition(p.getOwnForce(), dt);
-		}
+		particles.forEach( p -> p.updateLastPosition(p.getOwnForce(), dt));
 	}
 
 	public void loop() {
-		Map<RoastedParticle, Pair> forces = new HashMap<>();
-		Map<RoastedParticle, Set<RoastedParticle>> neighbours = cellIndexMethod.getNeighboursMap();
-		for (RoastedParticle p : neighbours.keySet()) {
+		//Map<RoastedParticle, Set<RoastedParticle>> neighbours = cellIndexMethod.getNeighboursMap();
+		particles.forEach(p -> {
 			Pair force = p.getOwnForce();
-			for (RoastedParticle q : neighbours.get(p)) {
+			particles.stream().filter((q) -> !p.equals(q)).forEach(q -> {
 				Pair[] forceComponents = p.getForce(q);
 				force.add(Pair.sum(forceComponents[0], forceComponents[1]));
 				p.addPressure(forceComponents[0]);
-			}
-			force = Pair.sum(force, wallForce(p));
-			p.updateAceleration(force);
-		}
+			});
+			p.updateAceleration(Pair.sum(force, wallForce(p)));
+		});
 
 		time += dt;
-		for (RoastedParticle p : neighbours.keySet()) {
-			Pair lastPosition = p.getLastPosition();
-			updatePosition(p, dt);
-			updateVelocity(p, dt);
-		}
-		while(!toRemove.isEmpty()){
-			RoastedParticle p = toRemove.removeFirst();
-			particles.remove(p);
-		}
+
+		particles.parallelStream().forEach(p -> {
+            updatePosition(p, dt);
+            updateVelocity(p, dt);
+        });
+
+		particles.removeAll(toRemove);
+		toRemove.clear();
 	}
 
 	static double time = 0;
