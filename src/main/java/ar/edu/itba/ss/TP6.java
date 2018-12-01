@@ -7,10 +7,9 @@ import ar.edu.itba.ss.particle.Particle;
 import ar.edu.itba.ss.particle.RoastedParticle;
 import ar.edu.itba.ss.particle.SocialModelSimulator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static ar.edu.itba.ss.data.Data.*;
 
@@ -29,7 +28,7 @@ public class TP6 {
 		return new RoastedParticle(id_count, x, y, 0, 0, mass, r);
 	}
 
-	private static List<List<RoastedParticle>> generateTeam(int N_by_team) {
+	private static List<List<RoastedParticle>> generateTeams() {
 		List<List<RoastedParticle>> teams = new ArrayList<>();
 		boolean overlap;
 		id_count = 1;
@@ -61,9 +60,8 @@ public class TP6 {
 		OutputStat largePeopleFile = new OutputStat("largePeople-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
 		OutputStat diffPeopleFile = new OutputStat("diffPeople-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
 		OutputStat maxPressureFile = new OutputStat("maxPressure-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
-		List<List<RoastedParticle>> teams = generateTeam(N);
-		SocialModelSimulator socialModelSimulatorTeam1 = new SocialModelSimulator(teams.get(0), dt);
-		SocialModelSimulator socialModelSimulatorTeam2 = new SocialModelSimulator(teams.get(1), dt);
+		List<List<RoastedParticle>> teams = generateTeams();
+		List<SocialModelSimulator> teamsSocialModelSimulator = teams.stream().map(team -> new SocialModelSimulator(team, dt)).collect(Collectors.toList());
 		
 		double time = 0.0;
 		double lastTime = - dt2 - 1.0;
@@ -71,11 +69,13 @@ public class TP6 {
 		int localdiff = 0;
 		int totalDiff = 0;
 
-		while (socialModelSimulator.escapingParticles() > 0) {
+		while (teamsSocialModelSimulator.stream().noneMatch(team -> team.escapingParticles() == 0)) {
+			
 			if (lastTime + dt2 < time) {
+				List<RoastedParticle> particles = teams.stream().flatMap(List::stream).collect(Collectors.toList());
 				ovitoFile.printState(particles);
-				double mp = particles.stream().mapToDouble(EscapingParticle::getPressure).max().getAsDouble();
-				particles.forEach(EscapingParticle::resetPressure);
+				double mp = particles.stream().mapToDouble(RoastedParticle::getPressure).max().getAsDouble();
+				particles.forEach(RoastedParticle::resetPressure);
 				if (maxPressure < mp) {
 					maxPressure = mp;
 				}
@@ -84,8 +84,12 @@ public class TP6 {
 				localdiff = totalDiff;
 			}
 			largePeopleFile.addStat(Integer.toString(totalDiff));
-			socialModelSimulator.loop();
-			int diff = getDifPeople(particles);
+			
+			List<Integer> indexes = IntStream.range(0,2).boxed().collect(Collectors.toList());
+			Collections.shuffle(indexes);
+			indexes.stream().map(teamsSocialModelSimulator::get).forEach(SocialModelSimulator::loop);
+			
+			int diff = 0;//@see getDifPeople and apply to each SocialModelSim indexes.stream().map(teamsSocialModelSimulator::get).mapToInt(SocialModelSimulator::diff).sum();
 			totalDiff += diff;
 			while (diff > 0){
 				peopleFile.addStat(Double.toString(time));

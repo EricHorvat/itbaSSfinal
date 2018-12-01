@@ -1,6 +1,7 @@
 package ar.edu.itba.ss.output;
 
 import ar.edu.itba.ss.particle.EscapingParticle;
+import ar.edu.itba.ss.particle.Particle;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -23,12 +24,12 @@ public class Output {
 		this.fileName = "./output/"+fileName;
 	}
 
-	public void printState(List<? extends EscapingParticle> particles) {
+	public void printState(List<? extends Particle> particles) {
 		List<String> lines = new LinkedList<>();
 		lines.add(String.valueOf(particles.size()));
 		lines.add(""+c);
 		c++;
-		for (EscapingParticle p : particles) {
+		for (Particle p : particles) {
 			lines.add(p.getInfo());
 		}
 		lines.set(0, String.valueOf(Integer.valueOf(lines.get(0)) + borders(lines)));
