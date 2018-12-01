@@ -4,17 +4,17 @@ import static ar.edu.itba.ss.data.Data.*;
 
 public class SocialModel {
 
-	public static Pair[] checkWallRight(EscapingParticle p) {
+	public static Pair[] checkWallRight(Particle p) {
 		double eps = p.getX() - W + p.getRadius();
 		return getContactForce(p.getVelocity(), eps, new Pair(1, 0), new Pair(0, 1));
 	}
 
-	public static Pair[] checkWallLeft(EscapingParticle p) {
+	public static Pair[] checkWallLeft(Particle p) {
 		double eps = p.getRadius() - p.getX();
 		return getContactForce(p.getVelocity(), eps, new Pair(-1, 0), new Pair(0, -1));
 	}
 
-	public static Pair[] checkWallBottom(EscapingParticle p) {
+	public static Pair[] checkWallBottom(Particle p) {
 		double eps = -(p.getY() - floorLevel) + p.getRadius();
 		return getContactForce(p.getVelocity(), eps, new Pair(0, -1), new Pair(1, 0));
 	}

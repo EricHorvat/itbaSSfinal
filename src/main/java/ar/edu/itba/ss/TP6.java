@@ -4,6 +4,7 @@ import ar.edu.itba.ss.output.Output;
 import ar.edu.itba.ss.output.OutputStat;
 import ar.edu.itba.ss.particle.EscapingParticle;
 import ar.edu.itba.ss.particle.Particle;
+import ar.edu.itba.ss.particle.RoastedParticle;
 import ar.edu.itba.ss.particle.SocialModelSimulator;
 
 import java.util.ArrayList;
@@ -21,32 +22,36 @@ public class TP6 {
 		return random.nextDouble() * (max - min) + min;
 	}
 
-	private static EscapingParticle createRandomParticle() {
+	private static RoastedParticle createRandomParticle(int team_index) {
 		double r = getRandomNumber(RAD_MIN, RAD_MAX) / 2.0;
-		double x = getRandomNumber(0, W - 2 * r)+r;
-		double y = getRandomNumber(0, L - 2 * r) + floorLevel + r;
-		return new EscapingParticle(id_count, x, y, 0, 0, mass, r);
+		double x = getRandomNumber(0, W - 2 * r) + team_index * W +  r;
+		double y = getRandomNumber(0, L - 2 * r) + r;
+		return new RoastedParticle(id_count, x, y, 0, 0, mass, r);
 	}
 
-	private static List<EscapingParticle> generateParticles(int N) {
-		List<EscapingParticle> list = new ArrayList<>();
+	private static List<List<RoastedParticle>> generateTeam(int N_by_team) {
+		List<List<RoastedParticle>> teams = new ArrayList<>();
 		boolean overlap;
 		id_count = 1;
-		while (id_count - 1 < N) {
-			overlap = false;
-			EscapingParticle newParticle = createRandomParticle();
-			for (EscapingParticle otherParticle : list) {
-				if (Particle.areOverlapped(otherParticle, newParticle)) {
-					overlap = true;
-					break;
+		for (int i = 0; i < 2; i++) {
+			List<RoastedParticle> team = new ArrayList<>();
+			while (id_count - 1 < N) {
+				overlap = false;
+				RoastedParticle newParticle = createRandomParticle(i);
+				for (RoastedParticle otherParticle : team) {
+					if (Particle.areOverlapped(otherParticle, newParticle)) {
+						overlap = true;
+						break;
+					}
+				}
+				if (!overlap) {
+					team.add(newParticle);
+					id_count++;
 				}
 			}
-			if (!overlap) {
-				list.add(newParticle);
-				id_count++;
-			}
+			teams.add(team);
 		}
-		return list;
+		return teams;
 	}
 
 	private static void systemSimulation(int loop){
@@ -56,8 +61,9 @@ public class TP6 {
 		OutputStat largePeopleFile = new OutputStat("largePeople-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
 		OutputStat diffPeopleFile = new OutputStat("diffPeople-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
 		OutputStat maxPressureFile = new OutputStat("maxPressure-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
-		List<EscapingParticle> particles = generateParticles(N);
-		SocialModelSimulator socialModelSimulator = new SocialModelSimulator(particles, dt);
+		List<List<RoastedParticle>> teams = generateTeam(N);
+		SocialModelSimulator socialModelSimulatorTeam1 = new SocialModelSimulator(teams.get(0), dt);
+		SocialModelSimulator socialModelSimulatorTeam2 = new SocialModelSimulator(teams.get(1), dt);
 		
 		double time = 0.0;
 		double lastTime = - dt2 - 1.0;

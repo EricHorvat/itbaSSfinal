@@ -2,10 +2,10 @@ package ar.edu.itba.ss.data;
 
 public class Data {
     public static int N = 300;
-    public static final double[] desiredVelocities = {0.8,1.45,2.1,2.75,3.4,4.05,4.7,5.35,6.0};
+    //public static final double[] desiredVelocities = {0.8,1.45,2.1,2.75,3.4,4.05,4.7,5.35,6.0};
     //public static final double[] desiredVelocities = {2.1+0.65/3,2.75-0.65/3,2.75+0.65/3,3.4-0.65/3};
     //public static final double[] desiredVelocities = {0.8,1.45,2.1,2.75,3.4,4.05,4.7,5.35,6.0,6.65,7.3,7.95,8.6,9.25,9.90,10.55};
-    //public static final double[] desiredVelocities = {4.06};
+    public static final double[] desiredVelocities = {4.06};
     public static double desiredVelocity;
     public static String desiredMethod = "Position";
     public static final double dt = 1e-4;

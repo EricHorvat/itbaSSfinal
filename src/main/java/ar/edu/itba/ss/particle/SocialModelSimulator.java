@@ -8,35 +8,35 @@ import static ar.edu.itba.ss.data.Data.*;
 
 public class SocialModelSimulator {
 
-	private List<EscapingParticle> particles;
+	private List<RoastedParticle> particles;
 	private double dt;
-	private CellIndexMethod<EscapingParticle> cellIndexMethod;
-	private List<EscapingParticle> borderParticles;
-	private LinkedList<EscapingParticle> toRemove;
+	private CellIndexMethod<RoastedParticle> cellIndexMethod;
+	private List<RoastedParticle> borderParticles;
+	private LinkedList<RoastedParticle> toRemove;
 
-	public SocialModelSimulator(List<EscapingParticle> particles, double dt) {
+	public SocialModelSimulator(List<RoastedParticle> particles, double dt) {
 		this.particles = particles;
 		this.dt = dt;
 		estimateInitialLastPosition();
 		borderParticles = new LinkedList<>();
-		borderParticles.add(new EscapingParticle(0, (W - D) / 2.0, floorLevel, 0, 0, 0, 0));
-		borderParticles.add(new EscapingParticle(0, (W + D) / 2.0, floorLevel, 0, 0, 0, 0));
+		borderParticles.add(new RoastedParticle(0, (W - D) / 2.0, floorLevel, 0, 0, 0, 0));
+		borderParticles.add(new RoastedParticle(0, (W + D) / 2.0, floorLevel, 0, 0, 0, 0));
 		cellIndexMethod = new CellIndexMethod<>(particles, L + floorLevel, 2.2, 1);
 		toRemove = new LinkedList<>();
 	}
 
 	private void estimateInitialLastPosition() {
-		for (EscapingParticle p : particles) {
+		for (RoastedParticle p : particles) {
 			p.updateLastPosition(p.getOwnForce(), dt);
 		}
 	}
 
 	public void loop() {
-		Map<EscapingParticle, Pair> forces = new HashMap<>();
-		Map<EscapingParticle, Set<EscapingParticle>> neighbours = cellIndexMethod.getNeighboursMap();
-		for (EscapingParticle p : neighbours.keySet()) {
+		Map<RoastedParticle, Pair> forces = new HashMap<>();
+		Map<RoastedParticle, Set<RoastedParticle>> neighbours = cellIndexMethod.getNeighboursMap();
+		for (RoastedParticle p : neighbours.keySet()) {
 			Pair force = p.getOwnForce();
-			for (EscapingParticle q : neighbours.get(p)) {
+			for (RoastedParticle q : neighbours.get(p)) {
 				Pair[] forceComponents = p.getForce(q);
 				force.add(Pair.sum(forceComponents[0], forceComponents[1]));
 				p.addPressure(forceComponents[0]);
@@ -46,20 +46,20 @@ public class SocialModelSimulator {
 		}
 
 		time += dt;
-		for (EscapingParticle p : neighbours.keySet()) {
+		for (RoastedParticle p : neighbours.keySet()) {
 			Pair lastPosition = p.getLastPosition();
 			updatePosition(p, dt);
 			updateVelocity(p, dt);
 		}
 		while(!toRemove.isEmpty()){
-			EscapingParticle p = toRemove.removeFirst();
+			RoastedParticle p = toRemove.removeFirst();
 			particles.remove(p);
 		}
 	}
 
 	static double time = 0;
 
-	private Pair wallForce(EscapingParticle p) {
+	private Pair wallForce(RoastedParticle p) {
 		Pair sum = new Pair(0, 0);
 		if (p.position.x - p.getRadius() < 0 && p.position.y > floorLevel) {
 			Pair[] force = SocialModel.checkWallLeft(p);
@@ -73,7 +73,7 @@ public class SocialModelSimulator {
 		}
 		if (Math.abs(p.position.y - floorLevel) < p.getRadius()) {
 			if (inDoor(p)) {
-				for (EscapingParticle borderParticle : borderParticles) {
+				for (RoastedParticle borderParticle : borderParticles) {
 					Pair[] forceComponents = p.getForce(borderParticle);
 					sum.add(Pair.sum(forceComponents[0], forceComponents[1]));
 					p.addPressure(forceComponents[0]);
@@ -87,14 +87,14 @@ public class SocialModelSimulator {
 		return sum;
 	}
 
-	private boolean inDoor(EscapingParticle Particle) {
+	private boolean inDoor(RoastedParticle Particle) {
 		double x = Particle.getX();
 		double midW = W / 2;
 		double midD = D / 2;
 		return x >= midW - midD && x <= midW + midD;
 	}
 
-	private void updatePosition(EscapingParticle p, double dt) {
+	private void updatePosition(RoastedParticle p, double dt) {
 		double rx = p.position.x + p.velocity.x * dt + 2.0/3 * p.aceleration.x * Math.pow(dt, 2) - 1.0 / 6 * p.lastAceleration.x * Math.pow(dt,2);
 		double ry = p.position.y + p.velocity.y * dt + 2.0/3 * p.aceleration.y * Math.pow(dt, 2) - 1.0 / 6 * p.lastAceleration.y * Math.pow(dt,2);
 
@@ -104,7 +104,7 @@ public class SocialModelSimulator {
 		}
 	}
 
-	private void updateVelocity(EscapingParticle p, double dt) {
+	private void updateVelocity(RoastedParticle p, double dt) {
 		double vx = p.velocity.x + 2.0/3 * p.aceleration.x * dt - 1.0 / 6 * p.lastAceleration.x * dt;
 		double vy = p.velocity.y + 2.0/3 * p.aceleration.y * dt - 1.0 / 6 * p.lastAceleration.y * dt;
 		p.updateVelocity(vx, vy);
