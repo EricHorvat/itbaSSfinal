@@ -34,16 +34,20 @@ public class SocialModelSimulator {
 	public void loop() {
 		Map<RoastedParticle, Set<RoastedParticle>> neighbours = cellIndexMethod.getNeighboursMap();
 		grid.set(particles);
+        Particle ball = new RoasterParticle(5, 5, 0,0, 0, 1, 0.1);
 		particles.forEach(p -> {
 			Pair force = p.getOwnForce();
 			//grid.getNeighbors(p).forEach(q -> {
 			neighbours.get(p).forEach(q -> {
-					Pair[] forceComponents = p.getForce(q);
+                Pair[] forceComponents = p.getForce(q);
+				Pair[] ballForce = p.getForce(ball);
+				force.add(Pair.sum(ballForce[0], ballForce[1]));
 				force.add(Pair.sum(forceComponents[0], forceComponents[1]));
 				p.addPressure(forceComponents[0]);
 			});
 			p.updateAceleration(Pair.sum(force, wallForce(p)));
 		});
+
 
 		time += dt;
 

@@ -4,6 +4,7 @@ import ar.edu.itba.ss.output.Output;
 import ar.edu.itba.ss.output.OutputStat;
 import ar.edu.itba.ss.particle.Particle;
 import ar.edu.itba.ss.particle.RoastedParticle;
+import ar.edu.itba.ss.particle.RoasterParticle;
 import ar.edu.itba.ss.particle.SocialModelSimulator;
 
 import java.util.*;
@@ -60,7 +61,8 @@ public class TP6 {
 		OutputStat diffPeopleFile = new OutputStat("diffPeople-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
 		OutputStat maxPressureFile = new OutputStat("maxPressure-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
 		List<List<RoastedParticle>> teams = generateTeams();
-		List<SocialModelSimulator> teamsSocialModelSimulator = teams.stream().map(team -> new SocialModelSimulator(team, dt)).collect(Collectors.toList());
+		List<SocialModelSimulator> teamsSocialModelSimulator = teams.stream()
+				.map(team -> new SocialModelSimulator(team, dt)).collect(Collectors.toList());
 		
 		double time = 0.0;
 		double lastTime = - dt2 - 1.0;
