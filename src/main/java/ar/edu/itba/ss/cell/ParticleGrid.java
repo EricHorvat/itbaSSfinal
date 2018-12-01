@@ -48,6 +48,9 @@ public class ParticleGrid<T extends Particle> implements Grid<T> {
                 .flatMap(Collection::stream)
                 .forEach(neighbor -> {
                     for (T particle : particles) {
+                        if (!includeSelf && particle.equals(neighbor)) {
+                            continue;
+                        }
                         if (Math.sqrt(particle.dist2(neighbor)) < actionRadius) {
                             addBothWays(particle, neighbor);
                         }
@@ -64,9 +67,7 @@ public class ParticleGrid<T extends Particle> implements Grid<T> {
             Pair position = theParticle.getPosition();
             int row = (int) Math.floor(position.getX() * getBucketCount() / getSideLength());
             int col = (int) Math.floor(position.getY() * getBucketCount() / getSideLength());
-            if (includeSelf) {
-                buckets.computeIfAbsent(new Cell(row, col), (cell) -> new LinkedList<>()).add(theParticle);
-            }
+            buckets.computeIfAbsent(new Cell(row, col), (cell) -> new LinkedList<>()).add(theParticle);
             particles.put(theParticle, new LinkedList<>());
         });
 
@@ -74,8 +75,8 @@ public class ParticleGrid<T extends Particle> implements Grid<T> {
             connectNeighborParticles(buckets, cell);
         });
 
-
         if (checkBruteForce) bruteForceCheck(originalParticles);
+
 
         return this;
     }
@@ -196,6 +197,7 @@ public class ParticleGrid<T extends Particle> implements Grid<T> {
                 leftCell,       selfCell,   rightCell,
                 bottomLeftCell, bottomCell, bottomRightCell
         ).filter(Objects::nonNull)
+                .parallel()
                 .map(buckets::get)
                 .filter(Objects::nonNull)
                 .flatMap(Collection::stream)

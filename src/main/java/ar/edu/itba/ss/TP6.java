@@ -62,7 +62,10 @@ public class TP6 {
 		OutputStat maxPressureFile = new OutputStat("maxPressure-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
 		List<List<RoastedParticle>> teams = generateTeams();
 		List<RoasterParticle> balls = new ArrayList<>();
-		balls.add(new RoasterParticle(666, 5, 5,0, 0, 1, 0.1));
+		balls.add(new RoasterParticle(666, 2.5, 2.5,0, 0, 1, 0.2));
+		balls.add(new RoasterParticle(666, 2.5, 7.5,0, 0, 1, 0.2));
+		balls.add(new RoasterParticle(666, 7.5, 2.5,0, 0, 1, 0.2));
+		balls.add(new RoasterParticle(666, 7.5, 7.5,0, 0, 1, 0.2));
 		List<SocialModelSimulator> teamsSocialModelSimulator = teams.stream()
 			.map(team -> new SocialModelSimulator(team, dt, balls)).collect(Collectors.toList());
 		double time = 0.0;

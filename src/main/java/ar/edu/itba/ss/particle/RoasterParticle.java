@@ -24,6 +24,6 @@ public class RoasterParticle extends Particle{
     
     @Override
     public String getInfo() {
-        return super.getInfo() + " -10000.0";
+        return super.getInfo() + " 0.0";
     }
 }

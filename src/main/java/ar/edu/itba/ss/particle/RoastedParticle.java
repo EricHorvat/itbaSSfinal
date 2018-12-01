@@ -112,4 +112,8 @@ public class RoastedParticle extends Particle {
 		/*TODO GET */
 	}
 	
+	public void updateTarget(Pair targetPosition){
+		this.targetPosition = targetPosition;
+	}
+	
 }

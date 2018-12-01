@@ -24,9 +24,9 @@ public class SocialModelSimulator {
 		this.dt = dt;
 		estimateInitialLastPosition();
 		toRemove = new LinkedList<>();
-		cellIndexMethod = new CellIndexMethod<>(particles, 2*W, 2.3, 1);
-		grid = new ParticleGrid<>(5, L, 1, false);
 		this.ballsSack = ballsSack;
+		double actionRadius = 5;//2.3;
+		grid = new ParticleGrid<>((int) Math.ceil(L / (actionRadius * 2)), L, actionRadius, false);
 	}
 
 	private void estimateInitialLastPosition() {
@@ -34,17 +34,18 @@ public class SocialModelSimulator {
 	}
 
 	public void loop() {
-		Map<RoastedParticle, Set<RoastedParticle>> neighbours = cellIndexMethod.getNeighboursMap();
 		grid.set(particles);
 		//Map<RoastedParticle, Set<RoastedParticle>> neighbours = cellIndexMethod.getNeighboursMap();
 		particles.forEach(p -> {
+			p.updateTarget(p.getPosition());
 			Pair force = p.getOwnForce();
-			//grid.getNeighbors(p).forEach(q -> {
-			neighbours.get(p).forEach(q -> {
-                Pair[] forceComponents = p.getForce(q);
-				Pair[] ballForce = p.getForce(ballsSack.get(0));
-				force.add(Pair.sum(ballForce[0], ballForce[1]));
+			grid.getNeighbors(p).forEach(q -> {
+				Pair[] forceComponents = p.getForce(q);
 				force.add(Pair.sum(forceComponents[0], forceComponents[1]));
+				ballsSack.stream().forEach(ball -> {
+					Pair[] ballForce = p.getForce(ball);
+					force.add(Pair.sum(ballForce[0], ballForce[1]));
+				});
 				p.addPressure(forceComponents[0]);
 			});
 			p.updateAceleration(Pair.sum(force, wallForce(p)));
@@ -88,7 +89,7 @@ public class SocialModelSimulator {
 		}
 		return sum;
 	}
-	
+
 	private void updatePosition(RoastedParticle p, double dt) {
 		double rx = p.position.x + p.velocity.x * dt + 2.0/3 * p.acceleration.x * Math.pow(dt, 2) - 1.0 / 6 * p.lastAceleration.x * Math.pow(dt,2);
 		double ry = p.position.y + p.velocity.y * dt + 2.0/3 * p.acceleration.y * Math.pow(dt, 2) - 1.0 / 6 * p.lastAceleration.y * Math.pow(dt,2);
@@ -104,7 +105,7 @@ public class SocialModelSimulator {
 		double vy = p.velocity.y + 2.0/3 * p.acceleration.y * dt - 1.0 / 6 * p.lastAceleration.y * dt;
 		p.updateVelocity(vx, vy);
 	}
-	
+
 	public int escapingParticles() {
 		return particles.size();
 	}
