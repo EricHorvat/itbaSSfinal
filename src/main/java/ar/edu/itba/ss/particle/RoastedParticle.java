@@ -7,9 +7,10 @@ public class RoastedParticle extends Particle {
 	private Pair lastPosition;
 	private Pair targetPosition;
 	private double pressure;
+	final private static double socialForceFactor = 1;
 	
 	public RoastedParticle(int id, double x, double y, double vx, double vy, double m, double r, int team) {
-		super(id, x, y, vx, vy, m, r, team);
+		super(id, x, y, vx, vy, m, r, team, socialForceFactor);
 		lastPosition = new Pair(0,0);
 		//targetPosition = new Pair(W / 2, 0);
 		targetPosition = new Pair(x, y);
@@ -51,6 +52,7 @@ public class RoastedParticle extends Particle {
 	public Pair[] getForce(Particle p) {
 		Pair[] granularForce = getGranularForce(p);
 		Pair socialForce = getSocialForce(p);
+		socialForce.multiply(p.getSocialForceFactor());
 		Pair n = Pair.sum(granularForce[0], socialForce);
 		return new Pair[] {n, granularForce[1]};
 	}
