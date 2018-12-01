@@ -9,9 +9,10 @@ public class Particle {
 	Pair lastAceleration;
 	private double radius;
 	private double mass;
-	
 
-	Particle(int id, double x, double y, double vx, double vy, double m, double r) {
+	private double socialForceFactor = 1;
+
+	Particle(int id, double x, double y, double vx, double vy, double m, double r, double sff) {
 		this.id = id;
 		this.position = new Pair(x, y);
 		this.velocity = new Pair(vx, vy);
@@ -19,6 +20,7 @@ public class Particle {
 		this.lastAceleration = new Pair(0, 0);
 		this.mass = m;
 		this.radius = r;
+		this.socialForceFactor = sff;
 	}
 
 	public int getId() {
@@ -55,7 +57,7 @@ public class Particle {
 	
 	public void updateVelocity(double x, double y) {
 		this.velocity = new Pair(x, y);
-		
+
 	}
 	
 	public void updateAceleration(Pair force) {
@@ -70,6 +72,10 @@ public class Particle {
 
 	public double getSpeed() {
 		return velocity.abs();
+	}
+
+	public double getSocialForceFactor() {
+		return socialForceFactor;
 	}
 
 

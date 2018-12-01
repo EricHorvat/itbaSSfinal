@@ -8,9 +8,10 @@ public class RoastedParticle extends Particle{
 	private Pair lastPosition;
 	private Pair targetPosition;
 	private double pressure;
-	
+	final private static double socialForceFactor = 1;
+
 	public RoastedParticle(int id, double x, double y, double vx, double vy, double m, double r) {
-		super(id, x, y, vx, vy, m, r);
+		super(id, x, y, vx, vy, m, r, socialForceFactor);
 		lastPosition = new Pair(0,0);
 		switch (desiredMethod){
 			case "MiddleDoor":
@@ -60,6 +61,7 @@ public class RoastedParticle extends Particle{
 	public Pair[] getForce(Particle p) {
 		Pair[] granularForce = getGranularForce(p);
 		Pair socialForce = getSocialForce(p);
+		socialForce.multiply(p.getSocialForceFactor());
 		Pair n = Pair.sum(granularForce[0], socialForce);
 		return new Pair[] {n, granularForce[1]};
 	}
