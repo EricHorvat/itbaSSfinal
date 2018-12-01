@@ -21,12 +21,15 @@ public class Output {
 		borderParticles = borders();
 	}
 
-	public void printState(List<? extends Particle> particles) {
+	public void printState(List<? extends Particle> particles, List<? extends Particle> balls) {
 		List<String> lines = new LinkedList<>();
-		lines.add(String.valueOf(particles.size() + borderParticles.size()));
+		lines.add(String.valueOf(particles.size() + balls.size() + borderParticles.size()));
 		lines.add(""+c);
 		c++;
 		for (Particle p : particles) {
+			lines.add(p.getInfo());
+		}
+		for (Particle p : balls) {
 			lines.add(p.getInfo());
 		}
 		lines.addAll(borderParticles);

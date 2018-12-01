@@ -17,14 +17,16 @@ public class SocialModelSimulator {
 	Grid<RoastedParticle> grid;
 	private LinkedList<RoastedParticle> toRemove;
 	private CellIndexMethod<RoastedParticle> cellIndexMethod;
+	private List<RoasterParticle> ballsSack;
 
-	public SocialModelSimulator(List<RoastedParticle> particles, double dt) {
+	public SocialModelSimulator(List<RoastedParticle> particles, double dt, List<RoasterParticle> ballsSack) {
 		this.particles = particles;
 		this.dt = dt;
 		estimateInitialLastPosition();
 		toRemove = new LinkedList<>();
 		cellIndexMethod = new CellIndexMethod<>(particles, 2*W, 2.3, 1);
 		grid = new ParticleGrid<>(5, L, 1, false);
+		this.ballsSack = ballsSack;
 	}
 
 	private void estimateInitialLastPosition() {
@@ -34,14 +36,13 @@ public class SocialModelSimulator {
 	public void loop() {
 		Map<RoastedParticle, Set<RoastedParticle>> neighbours = cellIndexMethod.getNeighboursMap();
 		grid.set(particles);
-		Particle ball = new RoasterParticle(666, 5, 5,0, 0, 1, 0.1);
 		//Map<RoastedParticle, Set<RoastedParticle>> neighbours = cellIndexMethod.getNeighboursMap();
 		particles.forEach(p -> {
 			Pair force = p.getOwnForce();
 			//grid.getNeighbors(p).forEach(q -> {
 			neighbours.get(p).forEach(q -> {
                 Pair[] forceComponents = p.getForce(q);
-				Pair[] ballForce = p.getForce(ball);
+				Pair[] ballForce = p.getForce(ballsSack.get(0));
 				force.add(Pair.sum(ballForce[0], ballForce[1]));
 				force.add(Pair.sum(forceComponents[0], forceComponents[1]));
 				p.addPressure(forceComponents[0]);

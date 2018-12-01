@@ -61,19 +61,19 @@ public class TP6 {
 		OutputStat diffPeopleFile = new OutputStat("diffPeople-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
 		OutputStat maxPressureFile = new OutputStat("maxPressure-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
 		List<List<RoastedParticle>> teams = generateTeams();
+		List<RoasterParticle> balls = new ArrayList<>();
+		balls.add(new RoasterParticle(666, 5, 5,0, 0, 1, 0.1));
 		List<SocialModelSimulator> teamsSocialModelSimulator = teams.stream()
-				.map(team -> new SocialModelSimulator(team, dt)).collect(Collectors.toList());
-		
+			.map(team -> new SocialModelSimulator(team, dt, balls)).collect(Collectors.toList());
 		double time = 0.0;
 		double lastTime = - dt2 - 1.0;
 		double maxPressure = 0.0;
 		int localdiff = 0;
 		int totalDiff = 0;
-
 		while (teamsSocialModelSimulator.stream().noneMatch(team -> team.escapingParticles() == 0)) {
 			if (lastTime + dt2 < time) {
 				List<RoastedParticle> particles = teams.stream().flatMap(List::stream).collect(Collectors.toList());
-				ovitoFile.printState(particles);
+				ovitoFile.printState(particles, balls);
 				double mp = particles.stream().mapToDouble(RoastedParticle::getPressure).max().getAsDouble();
 				particles.forEach(RoastedParticle::resetPressure);
 				if (maxPressure < mp) {
