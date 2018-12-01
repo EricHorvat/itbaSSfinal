@@ -92,10 +92,11 @@ public class TP6 {
 			while (diff > 0){
 				peopleFile.addStat(Double.toString(time));
 				System.out.println("Tdiff: " + totalDiff);
-				System.out.println("Time elapsed: " + time);
 				diff--;
 			}
 			time += dt;
+
+            System.out.println("Time elapsed: " + time);
 		}
 		System.out.println("Time elapsed: " + time);
 		maxPressureFile.addStat(Double.toString(maxPressure));

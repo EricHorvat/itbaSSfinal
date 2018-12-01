@@ -14,16 +14,16 @@ public class SocialModelSimulator {
 
 	private List<RoastedParticle> particles;
 	private double dt;
-	private CellIndexMethod<RoastedParticle> cellIndexMethod;
 	Grid<RoastedParticle> grid;
 	private LinkedList<RoastedParticle> toRemove;
+	private CellIndexMethod<RoastedParticle> cellIndexMethod;
 
 	public SocialModelSimulator(List<RoastedParticle> particles, double dt) {
 		this.particles = particles;
 		this.dt = dt;
 		estimateInitialLastPosition();
-		cellIndexMethod = new CellIndexMethod<>(particles, 2*W, 2.3, 1);
 		toRemove = new LinkedList<>();
+		cellIndexMethod = new CellIndexMethod<>(particles, 2*W, 2.3, 1);
 		grid = new ParticleGrid<>(5, L, 1, false);
 	}
 
