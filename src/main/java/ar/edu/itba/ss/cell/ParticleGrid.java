@@ -12,15 +12,17 @@ public class ParticleGrid<T extends Particle> implements Grid<T> {
     private final int bucketCount;
     private final double sideSize;
     private final double actionRadius;
+    private final boolean includeSelf;
     private final Map<T, Collection<T>> particles = new HashMap<>();
     private boolean checkBruteForce = false;
     final Map<Cell, Collection<T>> buckets = new HashMap<>();
 
 
-    public ParticleGrid(int bucketCount, double sideSize, double actionRadius) {
+    public ParticleGrid(int bucketCount, double sideSize, double actionRadius, boolean includeSelf) {
         this.bucketCount = bucketCount;
         this.sideSize = sideSize;
         this.actionRadius = actionRadius;
+        this.includeSelf = includeSelf;
         if (actionRadius > sideSize / bucketCount) {
             String msg = "action radius ({0}) can't be larger than half the bucket side size ({1})";
             throw new IllegalArgumentException(MessageFormat.format(msg, actionRadius, sideSize / bucketCount));
@@ -62,7 +64,9 @@ public class ParticleGrid<T extends Particle> implements Grid<T> {
             Pair position = theParticle.getPosition();
             int row = (int) Math.floor(position.getX() * getBucketCount() / getSideLength());
             int col = (int) Math.floor(position.getY() * getBucketCount() / getSideLength());
-            buckets.computeIfAbsent(new Cell(row, col), (cell) -> new LinkedList<>()).add(theParticle);
+            if (includeSelf) {
+                buckets.computeIfAbsent(new Cell(row, col), (cell) -> new LinkedList<>()).add(theParticle);
+            }
             particles.put(theParticle, new LinkedList<>());
         });
 
