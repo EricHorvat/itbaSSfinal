@@ -1,0 +1,32 @@
+1. Con equipo parejos, medir 'caudal' de quemados con distinta cantidad de jugadores.
+2. Medir la energia del sistema, graficar una curva por cada equipo. Hacerlo para 5 tamaños de equipos distintos.
+3. Repetir puntos anteriores pero para un tamaño de equipo fijo, variando la cantidad de pelotas.
+
+
+* Detalles de implementacion
+Cuando la pelota esta yendo hacia un equipo, la misma ejerce una fuerza social? sobre los jugadores de dicho equipo.
+El equipo que lanzo la pelota no es afectada por la misma hasta el momento en que la pelota es lanzada por el equipo opuesto.
+Cuando la pelota colisiona contra un jugador, esta deja de ejercer fuerzas hacia el equipo.
+Los jugadores quemados son elimiados y se 'colocan' alrededor de la cancha rival para tirar la pelota si no es agarrada.
+Conforme pasa el tiempo, la fuerza deseada se reduce, simulando 'el cansancio' de los jugadores, reduciendo sus posibilidades
+de esquivar la pelota.
+Cuando los jugadores lanzan la pelota, no realizan lanzamientos perfectos, sino que tienen probabilidad de errar, o
+'lanzar cerca de su objetivo'.
+
+La velocidad con la cual tiran las pelotas los jugadores al igual que su chance de esquivar la pelota depende de el radio
+(a mas radio, mas fuerte lanzan, y menos esquivan)
+
+
+* Cancha
+10 x 20 mts
+Cada mitad de 10 x 10 mts
+Velocidad promedio: 80km/h
+Velocidad maxima: 100km/h
+Roce del aire: -1/2*p*A*C*|v|^2 * v^ (versor)
+
+Links
+https://www.ominocity.com/2015/01/15/how-fast-can-you-throw-a-dodgeball-anyway/
+https://www.wired.com/2015/01/air-resistance-force-make-difference/
+https://en.wikipedia.org/wiki/National_Dodgeball_League_rules
+
+
