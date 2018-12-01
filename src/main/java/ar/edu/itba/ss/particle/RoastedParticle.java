@@ -12,7 +12,7 @@ public class RoastedParticle extends Particle {
 		super(id, x, y, vx, vy, m, r, team);
 		lastPosition = new Pair(0,0);
 		//targetPosition = new Pair(W / 2, 0);
-		targetPosition = new Pair(W, L);
+		targetPosition = new Pair(x, y);
 	}
 	
 	public Pair getOwnForce() {
@@ -22,7 +22,9 @@ public class RoastedParticle extends Particle {
 	private Pair getDrivingForce() {
 		
 		Pair dir = Pair.less(targetPosition, position);
-		dir.normalize();
+		if (dir.x != 0 || dir.y != 0){
+			dir.normalize();
+		}
 		return SocialModel.getDrivingForce(getMass(), velocity, dir);
 	}
 	

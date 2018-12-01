@@ -32,12 +32,13 @@ public class SocialModelSimulator {
 	}
 
 	public void loop() {
-		//Map<RoastedParticle, Set<RoastedParticle>> neighbours = cellIndexMethod.getNeighboursMap();
+		Map<RoastedParticle, Set<RoastedParticle>> neighbours = cellIndexMethod.getNeighboursMap();
 		grid.set(particles);
 		particles.forEach(p -> {
 			Pair force = p.getOwnForce();
-			grid.getNeighbors(p).forEach(q -> {
-				Pair[] forceComponents = p.getForce(q);
+			//grid.getNeighbors(p).forEach(q -> {
+			neighbours.get(p).forEach(q -> {
+					Pair[] forceComponents = p.getForce(q);
 				force.add(Pair.sum(forceComponents[0], forceComponents[1]));
 				p.addPressure(forceComponents[0]);
 			});
