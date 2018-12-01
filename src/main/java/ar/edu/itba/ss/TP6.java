@@ -28,7 +28,7 @@ public class TP6 {
 		return new RoastedParticle(id_count, x, y, 0, 0, mass, r, team_index);
 	}
 
-	private static List<List<RoastedParticle>> generateTeams() {
+	private static List<List<RoastedParticle>> generateTeams(List<RoasterParticle> ballsSack) {
 		List<List<RoastedParticle>> teams = new ArrayList<>();
 		boolean overlap;
 		for (int i = 0; i < 2; i++) {
@@ -38,6 +38,12 @@ public class TP6 {
 				overlap = false;
 				RoastedParticle newParticle = createRandomParticle(i);
 				for (RoastedParticle otherParticle : team) {
+					if (Particle.areOverlapped(otherParticle, newParticle)) {
+						overlap = true;
+						break;
+					}
+				}
+				for (RoasterParticle otherParticle : ballsSack) {
 					if (Particle.areOverlapped(otherParticle, newParticle)) {
 						overlap = true;
 						break;
@@ -60,12 +66,12 @@ public class TP6 {
 		OutputStat largePeopleFile = new OutputStat("largePeople-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
 		OutputStat diffPeopleFile = new OutputStat("diffPeople-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
 		OutputStat maxPressureFile = new OutputStat("maxPressure-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
-		List<List<RoastedParticle>> teams = generateTeams();
 		List<RoasterParticle> balls = new ArrayList<>();
 		balls.add(new RoasterParticle(666, 2.5, 2.5,0, 0, 1, 0.2));
 		balls.add(new RoasterParticle(666, 2.5, 7.5,0, 0, 1, 0.2));
 		balls.add(new RoasterParticle(666, 7.5, 2.5,0, 0, 1, 0.2));
 		balls.add(new RoasterParticle(666, 7.5, 7.5,0, 0, 1, 0.2));
+		List<List<RoastedParticle>> teams = generateTeams(balls);
 		List<SocialModelSimulator> teamsSocialModelSimulator = teams.stream()
 			.map(team -> new SocialModelSimulator(team, dt, balls)).collect(Collectors.toList());
 		double time = 0.0;

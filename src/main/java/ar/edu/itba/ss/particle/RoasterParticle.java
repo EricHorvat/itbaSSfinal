@@ -2,7 +2,7 @@ package ar.edu.itba.ss.particle;
 
 public class RoasterParticle extends Particle{
 
-    final private static double socialForceFactor = 20;
+    final private static double socialForceFactor = 5;
     private  BallState state = BallState.AttackingLeft;
 
     public RoasterParticle(int id, double x, double y, double vx, double vy, double m, double r) {
