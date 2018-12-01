@@ -17,7 +17,7 @@ public class SocialModelSimulator {
 		this.particles = particles;
 		this.dt = dt;
 		estimateInitialLastPosition();
-		cellIndexMethod = new CellIndexMethod<>(particles, L + floorLevel, 2.2, 1);
+		cellIndexMethod = new CellIndexMethod<>(particles, L, 2.3, 1);
 		toRemove = new LinkedList<>();
 	}
 
@@ -57,42 +57,29 @@ public class SocialModelSimulator {
 
 	private Pair wallForce(RoastedParticle p) {
 		Pair sum = new Pair(0, 0);
-		if (p.position.x - p.getRadius() < 0 && p.position.y > floorLevel) {
+		if (p.position.x - p.getRadius() < 0 && p.position.y > 0) {
 			Pair[] force = SocialModel.checkWallLeft(p);
 			sum.add(Pair.sum(force[0], force[1]));
 			p.addPressure(force[0]);
 		}
-		if (p.position.x + p.getRadius() > W && p.position.y > floorLevel) {
+		if (p.position.x + p.getRadius() > W && p.position.y > 0) {
 			Pair[] force = SocialModel.checkWallRight(p);
 			sum.add(Pair.sum(force[0], force[1]));
 			p.addPressure(force[0]);
 		}
-		if (Math.abs(p.position.y - floorLevel) < p.getRadius()) {
-			if (inDoor(p)) {
-				/* TODO REFACTOR THIS
-				for (RoastedParticle borderParticle : borderParticles) {
-				 
-					Pair[] forceComponents = p.getForce(borderParticle);
-					sum.add(Pair.sum(forceComponents[0], forceComponents[1]));
-					p.addPressure(forceComponents[0]);
-				}
-				*/
-			} else {
-				Pair[] force = SocialModel.checkWallBottom(p);
-				sum.add(Pair.sum(force[0], force[1]));
-				p.addPressure(force[0]);
-			}
+		if (p.position.y - p.getRadius() < 0 && p.position.x > 0) {
+			Pair[] force = SocialModel.checkWallBottom(p);
+			sum.add(Pair.sum(force[0], force[1]));
+			p.addPressure(force[0]);
+		}
+		if (p.position.y + p.getRadius() > L && p.position.x > 0) {
+			Pair[] force = SocialModel.checkWallCeil(p);
+			sum.add(Pair.sum(force[0], force[1]));
+			p.addPressure(force[0]);
 		}
 		return sum;
 	}
-
-	private boolean inDoor(RoastedParticle Particle) {
-		double x = Particle.getX();
-		double midW = W / 2;
-		double midD = D / 2;
-		return x >= midW - midD && x <= midW + midD;
-	}
-
+	
 	private void updatePosition(RoastedParticle p, double dt) {
 		double rx = p.position.x + p.velocity.x * dt + 2.0/3 * p.aceleration.x * Math.pow(dt, 2) - 1.0 / 6 * p.lastAceleration.x * Math.pow(dt,2);
 		double ry = p.position.y + p.velocity.y * dt + 2.0/3 * p.aceleration.y * Math.pow(dt, 2) - 1.0 / 6 * p.lastAceleration.y * Math.pow(dt,2);

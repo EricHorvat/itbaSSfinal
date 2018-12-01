@@ -13,10 +13,15 @@ public class SocialModel {
 		double eps = p.getRadius() - p.getX();
 		return getContactForce(p.getVelocity(), eps, new Pair(-1, 0), new Pair(0, -1));
 	}
-
+	
 	public static Pair[] checkWallBottom(Particle p) {
-		double eps = -(p.getY() - floorLevel) + p.getRadius();
+		double eps = p.getRadius() - p.getY();
 		return getContactForce(p.getVelocity(), eps, new Pair(0, -1), new Pair(1, 0));
+	}
+	
+	public static Pair[] checkWallCeil(Particle p) {
+		double eps = p.getY() - L + p.getRadius();
+		return getContactForce(p.getVelocity(), eps, new Pair(0, 1), new Pair(-1, 0));
 	}
 
 	public static Pair[] getContactForce(Pair relativeVelocity, double eps, Pair norm, Pair tang) {

@@ -1,7 +1,6 @@
 package ar.edu.itba.ss.particle;
 
 import static ar.edu.itba.ss.data.Data.*;
-import static ar.edu.itba.ss.data.Data.floorLevel;
 
 public class RoastedParticle extends Particle{
 	
@@ -12,14 +11,7 @@ public class RoastedParticle extends Particle{
 	public RoastedParticle(int id, double x, double y, double vx, double vy, double m, double r) {
 		super(id, x, y, vx, vy, m, r);
 		lastPosition = new Pair(0,0);
-		switch (desiredMethod){
-			case "MiddleDoor":
-				targetPosition = new Pair(W / 2, floorLevel);
-				break;
-			case "Position":
-				targetPosition = new Pair( (W / 2) + (x / W - 0.5) * (D - 2 * RAD_MAX), floorLevel);
-				break;
-		}
+		targetPosition = new Pair(W / 2, 0);
 	}
 	
 	public Pair getOwnForce() {
@@ -28,10 +20,6 @@ public class RoastedParticle extends Particle{
 	
 	private Pair getDrivingForce() {
 		
-		if (getY() <= floorLevel) {
-			double x = getX();
-			targetPosition = new Pair(x, -1);
-		}
 		Pair dir = Pair.less(targetPosition, position);
 		dir.normalize();
 		return SocialModel.getDrivingForce(getMass(), velocity, dir);

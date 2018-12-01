@@ -121,9 +121,9 @@ public class TP6 {
 	private static int getDifPeople(List<RoastedParticle> particles) {
 		int diff = 0;
 		for (RoastedParticle particle : particles) {
-			if (particle.getLastPosition().y > floorLevel && particle.getPosition().y <= floorLevel) {
+			/*if (particle.getLastPosition().y > floorLevel && particle.getPosition().y <= floorLevel) {
 				diff += 1;
-			}
+			}*/
 		}
 		return diff;
 	}
