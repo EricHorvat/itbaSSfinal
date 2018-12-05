@@ -43,14 +43,14 @@ public class Output {
 		for (double x: XsVaryingY) {
 			double y = 0;
 			while(y <= L){
-				borderLines.add("-1 "+ x + " " + y + " " +RAD_MAX/10.0+" 1 0 0");
+				borderLines.add("-1 "+ x + " " + y + " 0.0 0.0 0.0 " +RAD_MAX/10.0+" 1 0 0");
 				y += RAD_MAX/10.0;
 			}
 		}
 		for (double y: YsVaryingX) {
 			double x = 0;
 			while(x <= 2*W){
-				borderLines.add("-1 "+ x + " " + y + " " +RAD_MAX/10.0+" 1 0 0");
+				borderLines.add("-1 "+ x + " " + y + " 0.0 0.0 0.0 " +RAD_MAX/10.0+" 1 0 0");
 				x += RAD_MAX/10.0;
 			}
 		}

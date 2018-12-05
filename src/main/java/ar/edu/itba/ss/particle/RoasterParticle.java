@@ -41,4 +41,18 @@ public class RoasterParticle extends Particle{
         dir.normalize();
         return SocialModel.getContactForce(Pair.less(velocity, p.velocity), eps, dir, new Pair(-dir.y, dir.x));
     }
+    
+    @Override
+    public void updateAceleration(Pair force) {
+        super.updateAceleration(force);
+        double signVx = Math.signum(velocity.x);
+        double signVy = Math.signum(velocity.y);
+        double abs2Vx = Math.pow(velocity.x,2);
+        double abs2Vy = Math.pow(velocity.y,2);
+        double rho = 1.2;
+        double area = Math.PI * Math.pow(this.getRadius(), 2);
+        double dragCoefficient = 0.47;
+        this.acceleration.x -= signVx * 0.5 * rho * area * dragCoefficient * abs2Vx / this.getMass();
+        this.acceleration.y -= signVy * 0.5 * rho * area * dragCoefficient * abs2Vy / this.getMass();
+    }
 }

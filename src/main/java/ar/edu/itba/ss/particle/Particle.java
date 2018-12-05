@@ -109,7 +109,7 @@ public class Particle {
 	}
 
 	public String getInfo() {
-		return getId() + " " + getX() + " " + getY() + " " + getRadius();
+		return getId() + " " + getX() + " " + getY() + " " + getVelocity().getX() + " " + getVelocity().getY() + " " + getVelocity().abs() + " " + getRadius();
 	}
 
 	public void collision(){}
