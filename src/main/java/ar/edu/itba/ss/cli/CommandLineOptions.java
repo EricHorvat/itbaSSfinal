@@ -1,0 +1,90 @@
+package ar.edu.itba.ss.cli;
+
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+public class CommandLineOptions {
+    private boolean errorFree;
+
+    /*
+    @Option(name = "-i", aliases = { "--in" }, required = false, forbids = {"-g"},
+     usage = "input file for the particles")
+    private Path inFile;
+
+    @Option(name = "-o", aliases = { "--out" }, required = true,
+     usage = "output file for the particles")
+    private Path outFile;
+
+    @Option(name = "-ñ", aliases = { "--fstats" }, required = false,
+     usage = "output file for stats")
+    private Path statsFile = Paths.get("stats.tsv");
+
+    @Option(name = "-g", aliases = { "--generate" }, required = false, forbids = {"-s"},
+     usage = "input file for the particles")
+    private boolean generate;
+
+    @Option(name = "-s", aliases = { "--simulate" }, required = false, forbids = {"-g"},
+     usage = "input file for the particles")
+    private boolean simulate;
+
+    @Option(name = "-l", aliases = {"--length", "-L"}, usage = "The height of the container")
+    private double lenght = 1.5;
+
+    @Option(name = "-d", aliases = {"--aperture", "-D"}, usage = "The diameter of the aperture in the base")
+    private double aperture = 0.15;
+
+    @Option(name = "-w", aliases = {"-W", "--width"}, usage = "The width of the container")
+    private double width = 1;
+
+    @Option(name = "-p", aliases = {"--particles", "-P"}, usage = "The number of particles to generate", depends = {"-g"})
+    private int particles = 1000;
+
+    @Option(name = "-r", aliases = {"--minDiameter"}, depends = {"-g"})
+    private double minDiameter = 0.02;
+
+    @Option(name = "-R", aliases = {"--maxDiameter"}, depends = {"-g"})
+    private double maxDiameter = 0.03;
+
+    @Option(name = "--mu", usage = "Mu", depends = {"-s"})
+    private double Mu = 0.1;
+
+    @Option(name = "--gamma", usage = "Gamma", depends = {"-s"})
+    private double Gamma = 100;
+
+    @Option(name = "-m", aliases = {"--mass", "-M"}, usage = "The mass of the particles", depends = {"-s"})
+    private double particleMass = 0.01;
+
+    @Option(name = "-t", aliases = {"--time"}, required = false,
+     usage = "simulation duration")
+    private double duration = 15;
+
+    @Option(name = "-ts", aliases = { "--time-step" }, required = false,
+     usage = "time step for simulation")
+    private double timeStep = .00005;
+
+    @Option(name = "-f", aliases = { "--fps" }, required = false,
+     usage = "frames per second")
+    private double fps = 60;
+    */
+
+    public CommandLineOptions(String... args) {
+        CmdLineParser parser = new CmdLineParser(this);
+        try {
+            parser.parseArgument(args);
+
+            errorFree = true;
+        } catch (CmdLineException e) {
+            System.err.println(e.getMessage());
+            parser.printUsage(System.err);
+        }
+    }
+
+
+    public boolean isErrorFree() {
+        return errorFree;
+    }
+}

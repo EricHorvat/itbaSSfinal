@@ -1,11 +1,13 @@
 package ar.edu.itba.ss;
 
+import ar.edu.itba.ss.cli.CommandLineOptions;
 import ar.edu.itba.ss.output.Output;
 import ar.edu.itba.ss.output.OutputStat;
 import ar.edu.itba.ss.particle.Particle;
 import ar.edu.itba.ss.particle.RoastedParticle;
 import ar.edu.itba.ss.particle.RoasterParticle;
 import ar.edu.itba.ss.particle.SocialModelSimulator;
+import org.kohsuke.args4j.CmdLineParser;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -119,6 +121,9 @@ public class TP6 {
 	
 
 	public static void main(String[] args){
+		CommandLineOptions values = new CommandLineOptions(args);
+		CmdLineParser parser = new CmdLineParser(values);
+
 		double timee = System.currentTimeMillis();
 		for (double dVelocity : desiredVelocities){
 			desiredVelocity = dVelocity;
