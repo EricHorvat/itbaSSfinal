@@ -26,4 +26,19 @@ public class RoasterParticle extends Particle{
     public String getInfo() {
         return super.getInfo() + " 0.0";
     }
+    
+    
+    public Pair[] getForce(Particle p) {
+        return getGranularForce(p);
+    }
+    
+    private Pair[] getGranularForce(Particle p) {
+        Pair dir = Pair.less(p.position, position);
+        double eps = p.getRadius() + getRadius() - dir.abs();
+        if (eps < 0) {
+            return new Pair[] { new Pair(0, 0), new Pair(0, 0) };
+        }
+        dir.normalize();
+        return SocialModel.getContactForce(Pair.less(velocity, p.velocity), eps, dir, new Pair(-dir.y, dir.x));
+    }
 }

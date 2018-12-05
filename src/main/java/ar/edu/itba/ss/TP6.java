@@ -2,10 +2,7 @@ package ar.edu.itba.ss;
 
 import ar.edu.itba.ss.output.Output;
 import ar.edu.itba.ss.output.OutputStat;
-import ar.edu.itba.ss.particle.Particle;
-import ar.edu.itba.ss.particle.RoastedParticle;
-import ar.edu.itba.ss.particle.RoasterParticle;
-import ar.edu.itba.ss.particle.SocialModelSimulator;
+import ar.edu.itba.ss.particle.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -74,6 +71,7 @@ public class TP6 {
 		List<List<RoastedParticle>> teams = generateTeams(balls);
 		List<SocialModelSimulator> teamsSocialModelSimulator = teams.stream()
 			.map(team -> new SocialModelSimulator(team, dt, balls)).collect(Collectors.toList());
+		BallModelSimulator ballModelSimulator = new BallModelSimulator(balls,dt);
 		double time = 0.0;
 		double lastTime = - dt2 - 1.0;
 		double maxPressure = 0.0;
@@ -97,6 +95,7 @@ public class TP6 {
 			List<Integer> indexes = IntStream.range(0,2).boxed().collect(Collectors.toList());
 			Collections.shuffle(indexes);
 			indexes.stream().map(teamsSocialModelSimulator::get).forEach(SocialModelSimulator::loop);
+			ballModelSimulator.loop(teams.stream().flatMap(List::stream).collect(Collectors.toList()));
 			
 			int diff = 0;//@see getDifPeople and apply to each SocialModelSim indexes.stream().map(teamsSocialModelSimulator::get).mapToInt(SocialModelSimulator::diff).sum();
 			totalDiff += diff;
