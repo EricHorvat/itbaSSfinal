@@ -1,14 +1,10 @@
 package ar.edu.itba.ss.particle;
 
-import ar.edu.itba.ss.cell.CellIndexMethod;
 import ar.edu.itba.ss.cell.Grid;
 import ar.edu.itba.ss.cell.ParticleGrid;
+import ar.edu.itba.ss.cli.CommandLineOptions;
 
 import java.util.*;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-
-import static ar.edu.itba.ss.data.Data.*;
 
 public class SocialModelSimulator {
 
@@ -16,10 +12,13 @@ public class SocialModelSimulator {
 	private double dt;
 	Grid<RoastedParticle> grid;
 	private LinkedList<RoastedParticle> toRemove;
-	private CellIndexMethod<RoastedParticle> cellIndexMethod;
 	private List<RoasterParticle> ballsSack;
+	private final CommandLineOptions options;
 
-	public SocialModelSimulator(List<RoastedParticle> particles, double dt, List<RoasterParticle> ballsSack) {
+	public SocialModelSimulator(CommandLineOptions options, List<RoastedParticle> particles, double dt, List<RoasterParticle> ballsSack) {
+		final double L = Math.max(options.getLenght(), options.getWidth());
+
+		this.options = options;
 		this.particles = particles;
 		this.dt = dt;
 		estimateInitialLastPosition();
@@ -67,6 +66,9 @@ public class SocialModelSimulator {
 	static double time = 0;
 
 	private Pair wallForce(RoastedParticle p) {
+		final double W = options.getWidth();
+		final double L = options.getLenght();
+
 		Pair sum = new Pair(0, 0);
 		if (p.position.x - p.getRadius() + W * p.getTeam() < 0 && p.position.y > 0) {
 			Pair[] force = SocialModel.checkWallLeft(p);

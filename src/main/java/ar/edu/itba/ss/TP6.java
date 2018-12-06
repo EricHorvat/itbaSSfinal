@@ -3,19 +3,16 @@ package ar.edu.itba.ss;
 import ar.edu.itba.ss.cli.CommandLineOptions;
 import ar.edu.itba.ss.output.Output;
 import ar.edu.itba.ss.output.OutputStat;
-import ar.edu.itba.ss.particle.Particle;
-import ar.edu.itba.ss.particle.RoastedParticle;
-import ar.edu.itba.ss.particle.RoasterParticle;
-import ar.edu.itba.ss.particle.SocialModelSimulator;
-import org.kohsuke.args4j.CmdLineParser;
+import ar.edu.itba.ss.particle.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static ar.edu.itba.ss.data.Data.*;
-
 public class TP6 {
+
+	private static int id_count = 1;
+	private static CommandLineOptions options;
 
 	private static final Random random = new Random();
 
@@ -24,6 +21,12 @@ public class TP6 {
 	}
 
 	private static RoastedParticle createRandomParticle(int team_index) {
+		final double RAD_MIN = options.getMinRadius();
+		final double RAD_MAX = options.getMaxRadius();
+		final double W = options.getWidth();
+		final double L = options.getLenght();
+		final double mass = options.getMass();
+
 		double r = getRandomNumber(RAD_MIN, RAD_MAX) / 2.0;
 		double x = getRandomNumber(0, W - 2 * r) + team_index * W +  r;
 		double y = getRandomNumber(0, L - 2 * r) + r;
@@ -31,6 +34,8 @@ public class TP6 {
 	}
 
 	private static List<List<RoastedParticle>> generateTeams(List<RoasterParticle> ballsSack) {
+		final int N = options.getN();
+
 		List<List<RoastedParticle>> teams = new ArrayList<>();
 		boolean overlap;
 		for (int i = 0; i < 2; i++) {
@@ -62,8 +67,11 @@ public class TP6 {
 	}
 
 	private static void systemSimulation(int loop){
-		String desiredVelocityStr = String.format(Locale.US,"%.2f",desiredVelocity);
-		Output ovitoFile = new Output("ovitoFile-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
+		final double dt = options.getDt();
+		final double dt2 = options.getDT2();
+
+		String desiredVelocityStr = String.format(Locale.US,"%.2f", options.getSpeed());
+		Output ovitoFile = new Output(options, "ovitoFile-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
 		OutputStat peopleFile = new OutputStat("people-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
 		OutputStat largePeopleFile = new OutputStat("largePeople-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
 		OutputStat diffPeopleFile = new OutputStat("diffPeople-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
@@ -75,7 +83,7 @@ public class TP6 {
 		balls.add(new RoasterParticle(666, 7.5, 7.5,0, 0, 1, 0.2));
 		List<List<RoastedParticle>> teams = generateTeams(balls);
 		List<SocialModelSimulator> teamsSocialModelSimulator = teams.stream()
-			.map(team -> new SocialModelSimulator(team, dt, balls)).collect(Collectors.toList());
+			.map(team -> new SocialModelSimulator(options, team, dt, balls)).collect(Collectors.toList());
 		double time = 0.0;
 		double lastTime = - dt2 - 1.0;
 		double maxPressure = 0.0;
@@ -121,16 +129,11 @@ public class TP6 {
 	
 
 	public static void main(String[] args){
-		CommandLineOptions values = new CommandLineOptions(args);
-		CmdLineParser parser = new CmdLineParser(values);
-
+		options = new CommandLineOptions(args);
+		SocialModel.options = options;
+		
 		double timee = System.currentTimeMillis();
-		for (double dVelocity : desiredVelocities){
-			desiredVelocity = dVelocity;
-			for (int time = 0; time < times; time++){
-				systemSimulation(time);
-			}
-		}
+		systemSimulation(1);
 		System.out.println(System.currentTimeMillis() - timee);
 	}
 

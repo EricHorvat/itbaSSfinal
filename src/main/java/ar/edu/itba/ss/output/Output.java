@@ -1,5 +1,6 @@
 package ar.edu.itba.ss.output;
 
+import ar.edu.itba.ss.cli.CommandLineOptions;
 import ar.edu.itba.ss.particle.Particle;
 
 import java.io.FileWriter;
@@ -8,15 +9,15 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static ar.edu.itba.ss.data.Data.*;
-
 public class Output {
 
 	private String fileName;
 	private int c = 0;
 	private List<String> borderParticles;
+	private CommandLineOptions options;
 
-	public Output(String fileName) {
+	public Output(CommandLineOptions options, String fileName) {
+		this.options = options;
 		this.fileName = "./output/"+fileName;
 		borderParticles = borders();
 	}
@@ -37,6 +38,10 @@ public class Output {
 	}
 
 	private List<String> borders(){
+		final double L = options.getLenght();
+		final double W = options.getWidth();
+		final double RAD_MAX = options.getMaxRadius();
+
 		List<String> borderLines = new ArrayList<>();
 		double[] YsVaryingX = {0,L};
 		double[] XsVaryingY = {0,W,2*W};
