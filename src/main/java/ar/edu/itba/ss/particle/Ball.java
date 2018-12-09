@@ -1,12 +1,11 @@
 package ar.edu.itba.ss.particle;
 
-public class RoasterParticle extends Particle{
+public class Ball extends Particle{
 
-    final private static double socialForceFactor = 5;
     private  BallState state = BallState.AttackingLeft;
 
-    public RoasterParticle(int id, double x, double y, double vx, double vy, double m, double r) {
-        super(id, x, y, vx, vy, m, r,-1, socialForceFactor);
+    public Ball(int id, double x, double y, double vx, double vy, double m, double r) {
+        super(id, x, y, vx, vy, m, r,-1);
     }
 
     public void changeState(){

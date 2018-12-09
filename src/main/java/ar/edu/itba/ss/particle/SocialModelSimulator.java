@@ -8,14 +8,14 @@ import java.util.*;
 
 public class SocialModelSimulator {
 
-	private List<RoastedParticle> particles;
+	private List<Player> particles;
 	private double dt;
-	Grid<RoastedParticle> grid;
-	private LinkedList<RoastedParticle> toRemove;
-	private List<RoasterParticle> ballsSack;
+	Grid<Player> grid;
+	private LinkedList<Player> toRemove;
+	private Ball ball;
 	private final CommandLineOptions options;
 
-	public SocialModelSimulator(CommandLineOptions options, List<RoastedParticle> particles, double dt, List<RoasterParticle> ballsSack) {
+	public SocialModelSimulator(CommandLineOptions options, List<Player> particles, double dt, Ball ball) {
 		final double L = Math.max(options.getLenght(), options.getWidth());
 
 		this.options = options;
@@ -23,7 +23,7 @@ public class SocialModelSimulator {
 		this.dt = dt;
 		estimateInitialLastPosition();
 		toRemove = new LinkedList<>();
-		this.ballsSack = ballsSack;
+		this.ball = ball;
 		double actionRadius = 5;//2.3;
 		grid = new ParticleGrid<>((int) Math.ceil(L / (actionRadius * 2)), L, actionRadius, false);
 	}
@@ -33,19 +33,15 @@ public class SocialModelSimulator {
 	}
 
 	public void loop() {
-		//grid.set(particles);
-		//Map<RoastedParticle, Set<RoastedParticle>> neighbours = cellIndexMethod.getNeighboursMap();
-		
+		grid.set(particles);
+
+		particles.forEach(p -> p.updateTarget(null));
+
 		particles.forEach(p -> {
-			p.updateTarget(p.getPosition());
 			Pair force = p.getOwnForce();
 			particles.stream().filter(q -> !p.equals(q)).forEach(q -> {
 				Pair[] forceComponents = p.getForce(q);
 				force.add(Pair.sum(forceComponents[0], forceComponents[1]));
-				ballsSack.stream().forEach(ball -> {
-					Pair[] ballForce = p.getForce(ball);
-					force.add(Pair.sum(ballForce[0], ballForce[1]));
-				});
 				p.addPressure(forceComponents[0]);
 			});
 			p.updateAceleration(Pair.sum(force, wallForce(p)));
@@ -65,12 +61,12 @@ public class SocialModelSimulator {
 
 	static double time = 0;
 
-	private Pair wallForce(RoastedParticle p) {
+	private Pair wallForce(Player p) {
 		final double W = options.getWidth();
 		final double L = options.getLenght();
 
 		Pair sum = new Pair(0, 0);
-		if (p.position.x - p.getRadius() + W * p.getTeam() < 0 && p.position.y > 0) {
+		if (p.position.x - p.getRadius() - W * p.getTeam() < 0 && p.position.y > 0) {
 			Pair[] force = SocialModel.checkWallLeft(p);
 			sum.add(Pair.sum(force[0], force[1]));
 			p.addPressure(force[0]);
@@ -93,7 +89,7 @@ public class SocialModelSimulator {
 		return sum;
 	}
 
-	private void updatePosition(RoastedParticle p, double dt) {
+	private void updatePosition(Player p, double dt) {
 		double rx = p.position.x + p.velocity.x * dt + 2.0/3 * p.acceleration.x * Math.pow(dt, 2) - 1.0 / 6 * p.lastAceleration.x * Math.pow(dt,2);
 		double ry = p.position.y + p.velocity.y * dt + 2.0/3 * p.acceleration.y * Math.pow(dt, 2) - 1.0 / 6 * p.lastAceleration.y * Math.pow(dt,2);
 
@@ -103,7 +99,7 @@ public class SocialModelSimulator {
 		}
 	}
 
-	private void updateVelocity(RoastedParticle p, double dt) {
+	private void updateVelocity(Player p, double dt) {
 		double vx = p.velocity.x + 2.0/3 * p.acceleration.x * dt - 1.0 / 6 * p.lastAceleration.x * dt;
 		double vy = p.velocity.y + 2.0/3 * p.acceleration.y * dt - 1.0 / 6 * p.lastAceleration.y * dt;
 		p.updateVelocity(vx, vy);

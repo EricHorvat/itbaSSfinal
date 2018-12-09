@@ -1,15 +1,14 @@
 package ar.edu.itba.ss.particle;
 
-public class RoastedParticle extends Particle {
+public class Player extends Particle {
 	
 	private Pair lastPosition;
 	private Pair targetPosition;
 	private double pressure;
-	final private static double socialForceFactor = 1;
 	private double throwingVelocity;
 
-	public RoastedParticle(int id, double x, double y, double vx, double vy, double m, double r, int team) {
-		super(id, x, y, vx, vy, m, r, team, socialForceFactor);
+	public Player(int id, double x, double y, double vx, double vy, double m, double r, int team) {
+		super(id, x, y, vx, vy, m, r, team);
 		lastPosition = new Pair(0,0);
 		//targetPosition = new Pair(W / 2, 0);
 		targetPosition = new Pair(x, y);
@@ -20,18 +19,21 @@ public class RoastedParticle extends Particle {
 	}
 	
 	private Pair getDrivingForce() {
-		
+		if (targetPosition == null) {
+			return new Pair(0, 0);
+		}
+
 		Pair dir = Pair.less(targetPosition, position);
 		if (dir.x != 0 || dir.y != 0){
 			dir.normalize();
 		}
 		return SocialModel.getDrivingForce(getMass(), velocity, dir);
 	}
-	
+
 	private Pair getSocialForce(Particle p) {
 		Pair dir = Pair.less(position, p.position);
 		double eps = dir.abs() - p.getRadius() - getRadius();
-		if (eps > 1) {
+		if (p instanceof Ball || eps > 1) {
 			return new Pair(0, 0);
 		}
 		dir.normalize();
@@ -51,7 +53,6 @@ public class RoastedParticle extends Particle {
 	public Pair[] getForce(Particle p) {
 		Pair[] granularForce = getGranularForce(p);
 		Pair socialForce = getSocialForce(p);
-		socialForce.multiply(p.getSocialForceFactor());
 		Pair n = Pair.sum(granularForce[0], socialForce);
 		return new Pair[] {n, granularForce[1]};
 	}

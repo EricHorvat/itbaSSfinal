@@ -33,14 +33,9 @@ public class SocialModel {
 		final double Kt = options.getKt();
 
 		Pair n = norm.clone();
-		double deps = Pair.internalProd(relativeVelocity,norm);
 		n.applyFunction(cord -> (-Kn * eps * cord));
-		//n.applyFunction(cord -> (-Kn * eps * cord - gammma * deps));
 		double velTang = Pair.internalProd(relativeVelocity, tang);
 		Pair t = new Pair(-Kt * eps * velTang * tang.x, -Kt * eps * velTang * tang.y);
-		/*double FNmod= n.abs();
-		double FTmod = -mu * FNmod * Math.signum(velTang);
-		Pair t = new Pair(FTmod * tang.x, FTmod * tang.y);*/
 		return new Pair[] {n, t};
 	}
 

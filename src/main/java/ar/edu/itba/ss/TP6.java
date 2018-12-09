@@ -9,6 +9,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static java.util.List.*;
+
 public class TP6 {
 
 	private static int id_count = 1;
@@ -20,7 +22,7 @@ public class TP6 {
 		return random.nextDouble() * (max - min) + min;
 	}
 
-	private static RoastedParticle createRandomParticle(int team_index) {
+	private static Player createRandomParticle(int team_index) {
 		final double RAD_MIN = options.getMinRadius();
 		final double RAD_MAX = options.getMaxRadius();
 		final double W = options.getWidth();
@@ -28,33 +30,30 @@ public class TP6 {
 		final double mass = options.getMass();
 
 		double r = getRandomNumber(RAD_MIN, RAD_MAX) / 2.0;
-		double x = getRandomNumber(0, W - 2 * r) + team_index * W +  r;
-		double y = getRandomNumber(0, L - 2 * r) + r;
-		return new RoastedParticle(id_count, x, y, 0, 0, mass, r, team_index);
+		double x = getRandomNumber(r, W - 2 * r) + team_index * W +  r;
+		double y = getRandomNumber(r, L - 2 * r) + r;
+		return new Player(id_count, x, y, 0, 0, mass, r, team_index);
 	}
 
-	private static List<List<RoastedParticle>> generateTeams(List<RoasterParticle> ballsSack) {
+	private static List<List<Player>> generateTeams(Ball ball) {
 		final int N = options.getN();
 
-		List<List<RoastedParticle>> teams = new ArrayList<>();
+		List<List<Player>> teams = new ArrayList<>();
 		boolean overlap;
 		for (int i = 0; i < 2; i++) {
 			id_count = 1 + N * i;
-			List<RoastedParticle> team = new ArrayList<>();
+			List<Player> team = new ArrayList<>();
 			while (id_count - 1 < N * (i + 1)) {
 				overlap = false;
-				RoastedParticle newParticle = createRandomParticle(i);
-				for (RoastedParticle otherParticle : team) {
+				Player newParticle = createRandomParticle(i);
+				for (Player otherParticle : team) {
 					if (Particle.areOverlapped(otherParticle, newParticle)) {
 						overlap = true;
 						break;
 					}
 				}
-				for (RoasterParticle otherParticle : ballsSack) {
-					if (Particle.areOverlapped(otherParticle, newParticle)) {
-						overlap = true;
-						break;
-					}
+				if (Particle.areOverlapped(ball, newParticle)) {
+					overlap = true;
 				}
 				if (!overlap) {
 					team.add(newParticle);
@@ -76,25 +75,22 @@ public class TP6 {
 		OutputStat largePeopleFile = new OutputStat("largePeople-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
 		OutputStat diffPeopleFile = new OutputStat("diffPeople-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
 		OutputStat maxPressureFile = new OutputStat("maxPressure-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
-		List<RoasterParticle> balls = new ArrayList<>();
-		balls.add(new RoasterParticle(666, 2.5, 2.5,0, 0, 1, 0.2));
-		balls.add(new RoasterParticle(666, 2.5, 7.5,0, 0, 1, 0.2));
-		balls.add(new RoasterParticle(666, 7.5, 2.5,0, 0, 1, 0.2));
-		balls.add(new RoasterParticle(666, 7.5, 7.5,0, 0, 1, 0.2));
-		List<List<RoastedParticle>> teams = generateTeams(balls);
+		Ball ball = new Ball(666, 2.5, 2.5,0, 0, 1, 0.2);
+		List<List<Player>> teams = generateTeams(ball);
 		List<SocialModelSimulator> teamsSocialModelSimulator = teams.stream()
-			.map(team -> new SocialModelSimulator(options, team, dt, balls)).collect(Collectors.toList());
+			.map(team -> new SocialModelSimulator(options, team, dt, ball)).collect(Collectors.toList());
 		double time = 0.0;
 		double lastTime = - dt2 - 1.0;
 		double maxPressure = 0.0;
 		int localdiff = 0;
 		int totalDiff = 0;
+		int print = 0;
 		while (teamsSocialModelSimulator.stream().noneMatch(team -> team.escapingParticles() == 0)) {
 			if (lastTime + dt2 < time) {
-				List<RoastedParticle> particles = teams.stream().flatMap(List::stream).collect(Collectors.toList());
-				ovitoFile.printState(particles, balls);
-				double mp = particles.stream().mapToDouble(RoastedParticle::getPressure).max().getAsDouble();
-				particles.forEach(RoastedParticle::resetPressure);
+				List<Player> particles = teams.stream().flatMap(List::stream).collect(Collectors.toList());
+				ovitoFile.printState(particles, ball);
+				double mp = particles.stream().mapToDouble(Player::getPressure).max().getAsDouble();
+				particles.forEach(Player::resetPressure);
 				if (maxPressure < mp) {
 					maxPressure = mp;
 				}
@@ -117,7 +113,9 @@ public class TP6 {
 			}
 			time += dt;
 
-            System.out.println("Time elapsed: " + time);
+            if (print++ % 1000 == 0) {
+            	System.out.println("Time elapsed: " + time);
+			}
 		}
 		System.out.println("Time elapsed: " + time);
 		maxPressureFile.addStat(Double.toString(maxPressure));
@@ -131,15 +129,15 @@ public class TP6 {
 	public static void main(String[] args){
 		options = new CommandLineOptions(args);
 		SocialModel.options = options;
-		
+
 		double timee = System.currentTimeMillis();
 		systemSimulation(1);
 		System.out.println(System.currentTimeMillis() - timee);
 	}
 
-	private static int getDifPeople(List<RoastedParticle> particles) {
+	private static int getDifPeople(List<Player> particles) {
 		int diff = 0;
-		for (RoastedParticle particle : particles) {
+		for (Player particle : particles) {
 			/*if (particle.getLastPosition().y > floorLevel && particle.getPosition().y <= floorLevel) {
 				diff += 1;
 			}*/

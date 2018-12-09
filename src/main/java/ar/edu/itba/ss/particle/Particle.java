@@ -12,9 +12,8 @@ public class Particle {
 	private double radius;
 	private double mass;
 	private int team;
-	private double socialForceFactor = 1;
 
-	Particle(int id, double x, double y, double vx, double vy, double m, double r, int team, double sff) {
+	Particle(int id, double x, double y, double vx, double vy, double m, double r, int team) {
 		this.id = id;
 		this.position = new Pair(x, y);
 		this.velocity = new Pair(vx, vy);
@@ -23,7 +22,6 @@ public class Particle {
 		this.mass = m;
 		this.radius = r;
 		this.team = team;
-		this.socialForceFactor = sff;
 	}
 
 	public int getId() {
@@ -83,10 +81,6 @@ public class Particle {
 
 	public double getSpeed() {
 		return velocity.abs();
-	}
-
-	public double getSocialForceFactor() {
-		return socialForceFactor;
 	}
 
 	@Override

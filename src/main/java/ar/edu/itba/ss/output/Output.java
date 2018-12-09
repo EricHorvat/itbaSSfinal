@@ -1,10 +1,13 @@
 package ar.edu.itba.ss.output;
 
 import ar.edu.itba.ss.cli.CommandLineOptions;
+import ar.edu.itba.ss.particle.Ball;
 import ar.edu.itba.ss.particle.Particle;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,20 +22,23 @@ public class Output {
 	public Output(CommandLineOptions options, String fileName) {
 		this.options = options;
 		this.fileName = "./output/"+fileName;
+		try {
+			Files.deleteIfExists(Paths.get(this.fileName));
+		} catch (IOException e) {
+			System.err.println("Ooops");
+		}
 		borderParticles = borders();
 	}
 
-	public void printState(List<? extends Particle> particles, List<? extends Particle> balls) {
+	public void printState(List<? extends Particle> particles, Ball ball) {
 		List<String> lines = new LinkedList<>();
-		lines.add(String.valueOf(particles.size() + balls.size() + borderParticles.size()));
+		lines.add(String.valueOf(particles.size() + 1 + borderParticles.size()));
 		lines.add(""+c);
 		c++;
 		for (Particle p : particles) {
 			lines.add(p.getInfo());
 		}
-		for (Particle p : balls) {
-			lines.add(p.getInfo());
-		}
+			lines.add(ball.getInfo());
 		lines.addAll(borderParticles);
 		writeFile(lines);
 	}
