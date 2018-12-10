@@ -100,7 +100,7 @@ public class SocialModelSimulator {
 
 		BallState state = ball.getState();
 		int court = (state == BallState.StandByAtLeft || state == BallState.AttackingLeft) ? 0 : 1;
-		int rival = court == 0 ? 1 : 0;
+		List<Player> rivalTeam = teams.get(court == 0 ? 1 : 0);
         List<Player> team = teams.get(court);
 
         //TODO: check for bounds here
@@ -131,7 +131,7 @@ public class SocialModelSimulator {
             catcher.get().updateTarget(null);
             ball.changeState();
             // throw ball
-			Player braulio = teams.get(rival).get(random.nextInt(teams.size()));
+			Player braulio = rivalTeam.get(rivalTeam.size() > 1 ? random.nextInt(teams.size()) : 0);
 			Pair target = braulio.getPosition().substract(ball.getPosition());
 			target.normalize();
 			ball.updateVelocity(20 * target.getX(), 20 * target.getY());
@@ -141,6 +141,8 @@ public class SocialModelSimulator {
 		} else {
         	ball.updateVelocity(0, 0);
         	Player roasted = catcher.get();
+			ball.updatePosition(roasted.getX(), roasted.getY());
+			System.out.println(String.format("%d got roasted at %f", roasted.getId(), time));
         	timestamps.add(time);
         	roastedPlayers.add(roasted);
         	team.remove(roasted);
