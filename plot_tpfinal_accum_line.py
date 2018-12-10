@@ -49,15 +49,41 @@ def plot_surfacee(team_outputs_by_run, runs, n):
 
     #TODO PLOT AVG & ERR
 
-    #dd = np.array(np.asarray(team_outputs))
-    #davg= np.average(dd, axis=0)
-    #oavg.append(np.average(o))
-    #ostd.append(np.std(o))
-    #ax.plot(x,davg)
+    winners_arr = np.array(np.asarray(winners))
+    losers_arr = np.array(np.asarray(losers))
+    teams_arr = np.array(np.asarray(teams_s))
+
+    winners_arr_avg = np.average(winners_arr, axis=0)
+    winners_arr_err = np.std(winners_arr, axis=0)
+    losers_arr_avg = np.average(losers_arr, axis=0)
+    losers_arr_err = np.std(losers_arr, axis=0)
+    teams_arr_avg = np.average(teams_s, axis=0)
+    teams_arr_err = np.std(teams_s, axis=0)
+
+    fig = plt.figure()
+    ax = plt.gca()
+    ax.plot(winners_arr_avg)
+    ax.plot(winners_arr_avg + winners_arr_err, linestyle='--', color="r")
+    ax.plot(winners_arr_avg - winners_arr_err, linestyle='--', color="r")
+    plt.savefig('winner_err.png')
+
+    fig = plt.figure()
+    ax = plt.gca()
+    ax.plot(losers_arr_avg)
+    ax.plot(losers_arr_avg + losers_arr_err, linestyle='--', color="r")
+    ax.plot(losers_arr_avg - losers_arr_err, linestyle='--', color="r")
+    plt.savefig('loser_err.png')
+
+    fig = plt.figure()
+    ax = plt.gca()
+    ax.plot(teams_arr_avg)
+    ax.plot(teams_arr_avg + teams_arr_err, linestyle='--', color="r")
+    ax.plot(teams_arr_avg - teams_arr_err, linestyle='--', color="r")
+    plt.savefig('teams_err.png')
 
 
 def mains():
-    runs = 1
+    runs = 2
     n = 40
 
     team_outputs_by_run = []
@@ -65,7 +91,7 @@ def mains():
         team_outputs = []
         for team in range(0,3):
             team_outputs.append(parse_filee("outputTeam" + str("%d" % team) +
-                                # "dVel-"+ str(i) + "time" + TODO ADD MULTIPLE TIMES
+                                "-"+ str(run) + "time" + #TODO ADD MULTIPLE TIMES
                                 ".txt"))
         team_outputs_by_run.append(team_outputs)
 
