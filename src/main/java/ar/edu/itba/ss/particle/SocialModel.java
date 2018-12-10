@@ -23,7 +23,7 @@ public class SocialModel {
 	}
 	
 	public static Pair[] checkWallCeil(Particle p) {
-		final double L = options.getLenght();
+		final double L = options.getLength();
 		double eps = p.getY() - L + p.getRadius();
 		return getContactForce(p.getVelocity(), eps, new Pair(0, 1), new Pair(-1, 0));
 	}

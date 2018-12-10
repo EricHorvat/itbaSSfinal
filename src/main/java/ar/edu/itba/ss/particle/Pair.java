@@ -80,4 +80,9 @@ public class Pair {
 	public double getY() {
 		return y;
 	}
+
+	public Pair substract(Pair p) {
+
+		return new Pair(this.x - p.x, this.y - p.y);
+	}
 }

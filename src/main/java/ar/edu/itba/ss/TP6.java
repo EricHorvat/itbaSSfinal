@@ -7,9 +7,6 @@ import ar.edu.itba.ss.particle.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import static java.util.List.*;
 
 public class TP6 {
 
@@ -26,7 +23,7 @@ public class TP6 {
 		final double RAD_MIN = options.getMinRadius();
 		final double RAD_MAX = options.getMaxRadius();
 		final double W = options.getWidth();
-		final double L = options.getLenght();
+		final double L = options.getLength();
 		final double mass = options.getMass();
 
 		double r = getRandomNumber(RAD_MIN, RAD_MAX) / 2.0;
@@ -75,17 +72,22 @@ public class TP6 {
 		OutputStat largePeopleFile = new OutputStat("largePeople-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
 		OutputStat diffPeopleFile = new OutputStat("diffPeople-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
 		OutputStat maxPressureFile = new OutputStat("maxPressure-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
+
 		Ball ball = new Ball(666, 2.5, 2.5,0, 0, 1, 0.2);
+		ball.state = BallState.StandByAtLeft;
+
 		List<List<Player>> teams = generateTeams(ball);
-		List<SocialModelSimulator> teamsSocialModelSimulator = teams.stream()
-			.map(team -> new SocialModelSimulator(options, team, dt, ball)).collect(Collectors.toList());
+		teams.get(0).stream().min(Comparator.comparing(ball::dist2)).get().updateTarget(ball.getPosition());
+
+
+		SocialModelSimulator sms = new SocialModelSimulator(options, teams, dt, ball);
 		double time = 0.0;
 		double lastTime = - dt2 - 1.0;
 		double maxPressure = 0.0;
 		int localdiff = 0;
 		int totalDiff = 0;
 		int print = 0;
-		while (teamsSocialModelSimulator.stream().noneMatch(team -> team.escapingParticles() == 0)) {
+		while (sms.escapingParticles() > 0) {
 			if (lastTime + dt2 < time) {
 				List<Player> particles = teams.stream().flatMap(List::stream).collect(Collectors.toList());
 				ovitoFile.printState(particles, ball);
@@ -99,11 +101,9 @@ public class TP6 {
 				localdiff = totalDiff;
 			}
 			largePeopleFile.addStat(Integer.toString(totalDiff));
-			
-			List<Integer> indexes = IntStream.range(0,2).boxed().collect(Collectors.toList());
-			Collections.shuffle(indexes);
-			indexes.stream().map(teamsSocialModelSimulator::get).forEach(SocialModelSimulator::loop);
-			
+
+			sms.loop();
+
 			int diff = 0;//@see getDifPeople and apply to each SocialModelSim indexes.stream().map(teamsSocialModelSimulator::get).mapToInt(SocialModelSimulator::diff).sum();
 			totalDiff += diff;
 			while (diff > 0){

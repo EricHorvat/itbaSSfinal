@@ -2,18 +2,28 @@ package ar.edu.itba.ss.particle;
 
 public class Ball extends Particle{
 
-    private  BallState state = BallState.AttackingLeft;
+    public  BallState state = BallState.AttackingLeft;
 
     public Ball(int id, double x, double y, double vx, double vy, double m, double r) {
         super(id, x, y, vx, vy, m, r,-1);
     }
 
-    public void changeState(){
-        if(state == BallState.AttackingLeft || state == BallState.StandByAtLeft) {
-            state = BallState.AttackingRight;
-        }
-        else {
-            state = BallState.AttackingLeft;
+    public void changeState() {
+        switch (state) {
+            case AttackingLeft:
+                state = BallState.StandByAtLeft;
+                break;
+            case StandByAtLeft:
+                state = BallState.AttackingRight;
+                break;
+            case AttackingRight:
+                state = BallState.StandByAtRight;
+                break;
+            case StandByAtRight:
+                state = BallState.AttackingLeft;
+                break;
+            default:
+                throw new IllegalStateException("WTF?");
         }
     }
 

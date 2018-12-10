@@ -11,7 +11,7 @@ public class Player extends Particle {
 		super(id, x, y, vx, vy, m, r, team);
 		lastPosition = new Pair(0,0);
 		//targetPosition = new Pair(W / 2, 0);
-		targetPosition = new Pair(x, y);
+		targetPosition = null;
 	}
 	
 	public Pair getOwnForce() {
@@ -33,7 +33,7 @@ public class Player extends Particle {
 	private Pair getSocialForce(Particle p) {
 		Pair dir = Pair.less(position, p.position);
 		double eps = dir.abs() - p.getRadius() - getRadius();
-		if (p instanceof Ball || eps > 1) {
+		if (eps > 1 || p instanceof Ball) {
 			return new Pair(0, 0);
 		}
 		dir.normalize();

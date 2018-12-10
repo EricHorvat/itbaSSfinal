@@ -44,7 +44,7 @@ public class Output {
 	}
 
 	private List<String> borders(){
-		final double L = options.getLenght();
+		final double L = options.getLength();
 		final double W = options.getWidth();
 		final double RAD_MAX = options.getMaxRadius();
 
