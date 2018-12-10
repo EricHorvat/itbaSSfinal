@@ -3,13 +3,16 @@ package ar.edu.itba.ss.particle;
 import ar.edu.itba.ss.cell.Grid;
 import ar.edu.itba.ss.cell.ParticleGrid;
 import ar.edu.itba.ss.cli.CommandLineOptions;
+import ar.edu.itba.ss.output.OutputStat;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class SocialModelSimulator {
-
+	
 	private final List<List<Player>> teams;
+	private final List<OutputStat> deletedPlayerOutputStats;
 	private double dt;
 	Grid<Player> grid;
 	private Ball ball;
@@ -35,6 +38,8 @@ public class SocialModelSimulator {
 		this.ball = ball;
 		double actionRadius = 5;//2.3;
 		grid = new ParticleGrid<>((int) Math.ceil(L / (actionRadius * 2)), L, actionRadius, false);
+		deletedPlayerOutputStats = new ArrayList<>();
+		IntStream.range(0,3).forEach(i -> deletedPlayerOutputStats.add(new OutputStat("outputTeam"+i+".txt")));
 	}
 
 	private void estimateInitialLastPosition() {
@@ -139,14 +144,18 @@ public class SocialModelSimulator {
             // set response times for the rival team
 			// clear my team's reaction time
 		} else {
-        	ball.updateVelocity(0, 0);
-        	Player roasted = catcher.get();
+      ball.updateVelocity(0, 0);
+      Player roasted = catcher.get();
 			ball.updatePosition(roasted.getX(), roasted.getY());
 			System.out.println(String.format("%d got roasted at %f", roasted.getId(), time));
-        	timestamps.add(time);
-        	roastedPlayers.add(roasted);
-        	team.remove(roasted);
-        	ball.changeState();
+			/* STAT SAVING */
+			deletedPlayerOutputStats.get(roasted.getTeam()).addStat("" + time);
+			deletedPlayerOutputStats.get(2).addStat("" + time);
+			/* STAT SAVING */
+			timestamps.add(time);
+			roastedPlayers.add(roasted);
+			team.remove(roasted);
+			ball.changeState();
 			team.stream().min(Comparator.comparing(ball::dist2)).ifPresent(nearest -> {
 				nearest.updateTarget(ball.getPosition());
 			});
@@ -177,5 +186,9 @@ public class SocialModelSimulator {
 
 	public List<Player> getRoastedPlayers() {
 		return roastedPlayers;
+	}
+	
+	public void saveFiles(){
+		deletedPlayerOutputStats.forEach(OutputStat::writeFile);
 	}
 }

@@ -117,6 +117,7 @@ public class TP6 {
             	System.out.println("Time elapsed: " + time);
 			}
 		}
+		sms.saveFiles();
 		System.out.println("Time elapsed: " + time);
 		maxPressureFile.addStat(Double.toString(maxPressure));
 		maxPressureFile.writeFile();
