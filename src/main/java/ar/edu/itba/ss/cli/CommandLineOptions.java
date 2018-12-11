@@ -16,10 +16,10 @@ public class CommandLineOptions {
     private double mass = 80;
 
     @Option(name = "--speed", usage = "Speed")
-    private double speed = 14.06;
+    private double speed = 14;
 
     @Option(name = "--ball-speed", usage = "Speed")
-    private double ballSpeed = 50;
+    private double ballSpeed = 10;
 
     @Option(name = "--dodge-range-team-1", usage = "Dodge range from the trajectory line for team 1")
     private double dodgeRangeTeam1 = 4.06;
@@ -28,25 +28,25 @@ public class CommandLineOptions {
     private double dodgeRangeTeam2 = 4.06;
 
     @Option(name = "--min-reaction-time-team-1")
-    private double minReactionTime1 = 4.06;
+    private double minReactionTime1 = 0;
 
     @Option(name = "--min-reaction-time-team-2")
-    private double minReactionTime2 = 4.06;
+    private double minReactionTime2 = 0;
 
     @Option(name = "--max-reaction-time-team-1")
-    private double maxReactionTime1 = 4.06;
+    private double maxReactionTime1 = 0.3;
 
     @Option(name = "--max-reaction-time-team-2")
-    private double maxReactionTime2 = 4.06;
+    private double maxReactionTime2 = 0.3;
 
     @Option(name = "-b", usage = "Ball count")
     private double ballCount = 1;
 
     @Option(name = "--precision-team-1", usage = "Precision for team 1")
-    private double precisionTeam1 = 0.2;
+    private double precisionTeam1 = 0.15;
 
     @Option(name = "--precision-team-2", usage = "Precision for team 2")
-    private double precisionTeam2 = 0.2;
+    private double precisionTeam2 = 0.15;
 
     @Option(name = "-t", aliases = {"--time"}, usage = "max simulation duration")
     private double duration = 3600;

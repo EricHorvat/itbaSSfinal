@@ -5,13 +5,14 @@ public class Player extends Particle {
 	private Pair lastPosition;
 	private Pair targetPosition;
 	private double pressure;
-	private double throwingVelocity;
+	private double reactionTime;
 
 	public Player(int id, double x, double y, double vx, double vy, double m, double r, int team) {
 		super(id, x, y, vx, vy, m, r, team);
 		lastPosition = new Pair(0,0);
 		//targetPosition = new Pair(W / 2, 0);
 		targetPosition = null;
+		reactionTime = 0;
 	}
 	
 	public Pair getOwnForce() {
@@ -19,7 +20,7 @@ public class Player extends Particle {
 	}
 	
 	private Pair getDrivingForce() {
-		if (targetPosition == null) {
+		if (targetPosition == null || reactionTime > 0) {
 			return new Pair(0, 0);
 		}
 
@@ -92,10 +93,6 @@ public class Player extends Particle {
 		return 2 * Math.PI * getRadius();
 	}
 
-	public double getThrowingVelocity() {
-		return throwingVelocity;
-	}
-
 
 	@Override
 	public String getInfo() {
@@ -106,7 +103,16 @@ public class Player extends Particle {
 	public void collision(){
 		//updateTargetPosition();
 	}
-	
+
+	@Override
+	public void tick(double time) {
+		if (reactionTime - time <= 0) {
+			reactionTime = 0;
+			return;
+		}
+		reactionTime = reactionTime - time;
+	}
+
 	private void updateTargetPosition(/**/){
 		/*TODO GET */
 	}
@@ -114,5 +120,15 @@ public class Player extends Particle {
 	public void updateTarget(Pair targetPosition){
 		this.targetPosition = targetPosition;
 	}
-	
+
+
+	public void setReactionTime(double reactionTime) {
+		this.reactionTime = reactionTime;
+	}
+
+	public double distanceToTrajectory(Pair p1, Pair p2) {
+		double upper = Math.abs((p2.y - p1.y) * getX() - (p2.x - p1.x) * getY() + p2.x * p1.y - p2.y * p1.x);
+		double lower = Math.sqrt((p2.y - p1.y) * (p2.y - p1.y) + (p2.x - p1.x) * (p2.x - p1.x));
+		return upper / lower;
+	}
 }

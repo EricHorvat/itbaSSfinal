@@ -2,7 +2,7 @@ package ar.edu.itba.ss.particle;
 
 import java.util.Objects;
 
-public class Particle {
+public abstract class Particle {
 	
 	private int id;
 	Pair position;
@@ -107,4 +107,6 @@ public class Particle {
 	}
 
 	public void collision(){}
+
+	public abstract void tick(double time);
 }

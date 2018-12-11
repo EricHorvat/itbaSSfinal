@@ -113,7 +113,7 @@ public class TP6 {
 			}
 			time += dt;
 
-            if (print++ % 1000 == 0) {
+            if (print++ % 10000 == 0) {
             	System.out.println("Time elapsed: " + time);
 			}
 		}

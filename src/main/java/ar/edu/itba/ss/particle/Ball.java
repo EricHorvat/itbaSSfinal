@@ -35,4 +35,9 @@ public class Ball extends Particle{
     public String getInfo() {
         return super.getInfo() + " 0.0";
     }
+
+    @Override
+    public void tick(double time) {
+
+    }
 }

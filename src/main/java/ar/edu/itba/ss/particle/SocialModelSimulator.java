@@ -18,8 +18,6 @@ public class SocialModelSimulator {
 	private Ball ball;
 	private final CommandLineOptions options;
 	private static final Random random = new Random();
-	private final List<Double> timestamps = new LinkedList<>();
-	private final List<Player> roastedPlayers = new LinkedList<>();
 	static double time = 0;
 
 
@@ -51,6 +49,7 @@ public class SocialModelSimulator {
 		grid.set(particles);
 
 		particles.forEach(p -> {
+			p.tick(dt);
 			Pair force = p.getOwnForce();
 			teams.get(p.getTeam()).stream().filter(q -> !p.equals(q)).forEach(q -> {
 				Pair[] forceComponents = p.getForce(q);
@@ -121,6 +120,11 @@ public class SocialModelSimulator {
 			double x = getRandomNumber(r, W - 2 * r) + court * W + r;
 			double y = getRandomNumber(r, L - 2 * r) + r;
 			ball.updatePosition(x, y);
+
+			team.forEach(p -> {
+				p.setReactionTime(0);
+				p.updateTarget(null);
+			});
             team.stream().min(Comparator.comparing(ball::dist2)).ifPresent(nearest -> {
                 nearest.updateTarget(ball.getPosition());
             });
@@ -146,24 +150,43 @@ public class SocialModelSimulator {
 			ball.updateVelocity(ballSpeed * target.getX(), ballSpeed * target.getY());
 
             // set response times for the rival team
-			// clear my team's reaction time
+			rivalTeam.forEach(pipita -> {
+				double minReactionTime = court == 0 ? options.getMinReactionTime2() : options.getMinReactionTime1();
+				double maxReactionTime = court == 0 ? options.getMaxReactionTime2() : options.getMaxReactionTime1();
+				pipita.setReactionTime(minReactionTime + random.nextDouble() * (maxReactionTime - minReactionTime));
+			});
+            double reactionDistance = court == 0 ? options.getDodgeRangeTeam2() : options.getDodgeRangeTeam1();
+
+			rivalTeam.stream().filter(pele ->
+					pele.distanceToTrajectory(ball.getPosition(), target) < reactionDistance
+			).forEach(menem -> {
+                Pair escapeRouteVersor = target.clone();
+                escapeRouteVersor.substract(ball.getPosition());
+                escapeRouteVersor.tangent();
+                escapeRouteVersor.normalize();
+                escapeRouteVersor.multiply(reactionDistance);
+				escapeRouteVersor.add(menem.getPosition());
+                menem.updateTarget(escapeRouteVersor);
+            });
+
 		} else {
-      ball.updateVelocity(0, 0);
-      Player roasted = catcher.get();
+			ball.updateVelocity(0, 0);
+			Player roasted = catcher.get();
 			ball.updatePosition(roasted.getX(), roasted.getY());
 			System.out.println(String.format("%d got roasted at %f", roasted.getId(), time));
 			/* STAT SAVING */
 			deletedPlayerOutputStats.get(roasted.getTeam()).addStat("" + time);
 			deletedPlayerOutputStats.get(2).addStat("" + time);
 			/* STAT SAVING */
-			timestamps.add(time);
-			roastedPlayers.add(roasted);
 			team.remove(roasted);
 			ball.changeState();
+			team.forEach(p -> {
+				p.setReactionTime(0);
+				p.updateTarget(null);
+			});
 			team.stream().min(Comparator.comparing(ball::dist2)).ifPresent(nearest -> {
 				nearest.updateTarget(ball.getPosition());
 			});
-			// set reaction time for the rival team
 		}
 	}
 
@@ -184,13 +207,6 @@ public class SocialModelSimulator {
 		return teams.stream().mapToInt(List::size).min().orElse(0);
 	}
 
-	public List<Double> getTimestamps() {
-		return timestamps;
-	}
-
-	public List<Player> getRoastedPlayers() {
-		return roastedPlayers;
-	}
 	
 	public void saveFiles(){
 		deletedPlayerOutputStats.forEach(OutputStat::writeFile);

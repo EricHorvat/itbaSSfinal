@@ -85,4 +85,8 @@ public class Pair {
 
 		return new Pair(this.x - p.x, this.y - p.y);
 	}
+
+	public Pair tangent() {
+		return new Pair(this.y, -this.x);
+	}
 }
