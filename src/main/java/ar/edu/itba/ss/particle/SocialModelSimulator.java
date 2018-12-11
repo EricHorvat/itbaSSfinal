@@ -103,6 +103,7 @@ public class SocialModelSimulator {
 	private void updateBall() {
 		ball.updatePosition(ball.getX() + ball.velocity.getX() * dt, ball.getY() + ball.velocity.getY() * dt);
 
+		final double ballSpeed = options.getBallSpeed();
 		BallState state = ball.getState();
 		int court = (state == BallState.StandByAtLeft || state == BallState.AttackingLeft) ? 0 : 1;
 		List<Player> rivalTeam = teams.get(court == 0 ? 1 : 0);
@@ -139,7 +140,10 @@ public class SocialModelSimulator {
 			Player braulio = rivalTeam.get(rivalTeam.size() > 1 ? random.nextInt(teams.size()) : 0);
 			Pair target = braulio.getPosition().substract(ball.getPosition());
 			target.normalize();
-			ball.updateVelocity(20 * target.getX(), 20 * target.getY());
+			Pair noise = new Pair(random.nextDouble(), random.nextDouble());
+			noise.multiply(court == 0 ? options.getPrecisionTeam1() : options.getPrecisionTeam2());
+			target.add(noise);
+			ball.updateVelocity(ballSpeed * target.getX(), ballSpeed * target.getY());
 
             // set response times for the rival team
 			// clear my team's reaction time

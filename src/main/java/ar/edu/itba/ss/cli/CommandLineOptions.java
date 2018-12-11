@@ -18,6 +18,9 @@ public class CommandLineOptions {
     @Option(name = "--speed", usage = "Speed")
     private double speed = 14.06;
 
+    @Option(name = "--ball-speed", usage = "Speed")
+    private double ballSpeed = 50;
+
     @Option(name = "--dodge-range-team-1", usage = "Dodge range from the trajectory line for team 1")
     private double dodgeRangeTeam1 = 4.06;
 
@@ -215,4 +218,9 @@ public class CommandLineOptions {
     public double getMaxReactionTime2() {
         return maxReactionTime2;
     }
+
+    public double getBallSpeed() {
+        return ballSpeed;
+    }
+
 }
