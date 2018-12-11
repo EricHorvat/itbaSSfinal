@@ -47,8 +47,6 @@ def plot_surfacee(team_outputs_by_run, runs, n):
     plt.ylabel("Tiempo [s]")
     plt.savefig('teams.png')
 
-    #TODO PLOT AVG & ERR
-
     winners_arr = np.array(np.asarray(winners))
     losers_arr = np.array(np.asarray(losers))
     teams_arr = np.array(np.asarray(teams_s))
@@ -91,7 +89,7 @@ def mains():
         team_outputs = []
         for team in range(0,3):
             team_outputs.append(parse_filee("outputTeam" + str("%d" % team) +
-                                "-"+ str(run) + "time" + #TODO ADD MULTIPLE TIMES
+                                "-"+ str(run) + "time" +
                                 ".txt"))
         team_outputs_by_run.append(team_outputs)
 
