@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class SocialModelSimulator {
-	
+
 	private final List<List<Player>> teams;
 	private final List<OutputStat> deletedPlayerOutputStats;
 	private double dt;
@@ -63,9 +63,9 @@ public class SocialModelSimulator {
 		time += dt;
 
 		particles.parallelStream().forEach(p -> {
-            updatePosition(p, dt);
-            updateVelocity(p, dt);
-        });
+			updatePosition(p, dt);
+			updateVelocity(p, dt);
+		});
 
 		updateBall();
 
@@ -106,9 +106,9 @@ public class SocialModelSimulator {
 		BallState state = ball.getState();
 		int court = (state == BallState.StandByAtLeft || state == BallState.AttackingLeft) ? 0 : 1;
 		List<Player> rivalTeam = teams.get(court == 0 ? 1 : 0);
-        List<Player> team = teams.get(court);
+		List<Player> team = teams.get(court);
 
-        //TODO: check for bounds here
+		//TODO: check for bounds here
 		Pair position = ball.getPosition();
 		if (position.getY() > options.getLength() || position.getY() < 0
 				|| position.getX() < 0 || position.getX() > options.getWidth() * 2) {
@@ -124,50 +124,54 @@ public class SocialModelSimulator {
 			team.forEach(p -> {
 				p.setReactionTime(0);
 				p.updateTarget(null);
+				p.updateVelocity(0,0);
 			});
-            team.stream().min(Comparator.comparing(ball::dist2)).ifPresent(nearest -> {
-                nearest.updateTarget(ball.getPosition());
-            });
-            return;
+			team.stream().min(Comparator.comparing(ball::dist2)).ifPresent(nearest -> {
+				nearest.updateTarget(ball.getPosition());
+			});
+			return;
 		}
 
-        Optional<Player> catcher = team.stream().filter(p -> Particle.areOverlapped(p, ball)).findFirst();
+		Optional<Player> catcher = team.stream().filter(p -> Particle.areOverlapped(p, ball)).findFirst();
 
-        if (!catcher.isPresent()) {
-            return;
-        }
+		if (!catcher.isPresent()) {
+			return;
+		}
 
 		if (state == BallState.StandByAtLeft || state == BallState.StandByAtRight) {
-            catcher.get().updateTarget(null);
-            ball.changeState();
-            // throw ball
+			catcher.get().updateTarget(null);
+			ball.changeState();
+			// throw ball
 			Player braulio = rivalTeam.get(rivalTeam.size() > 1 ? random.nextInt(teams.size()) : 0);
-			Pair target = braulio.getPosition().substract(ball.getPosition());
-			target.normalize();
+			Pair target = braulio.getPosition().clone();
 			Pair noise = new Pair(random.nextDouble(), random.nextDouble());
 			noise.multiply(court == 0 ? options.getPrecisionTeam1() : options.getPrecisionTeam2());
 			target.add(noise);
+			Pair destination = target.clone();
+			target = target.substract(ball.getPosition());
+			target.normalize();
 			ball.updateVelocity(ballSpeed * target.getX(), ballSpeed * target.getY());
 
-            // set response times for the rival team
+			// set response times for the rival team
 			rivalTeam.forEach(pipita -> {
 				double minReactionTime = court == 0 ? options.getMinReactionTime2() : options.getMinReactionTime1();
 				double maxReactionTime = court == 0 ? options.getMaxReactionTime2() : options.getMaxReactionTime1();
 				pipita.setReactionTime(minReactionTime + random.nextDouble() * (maxReactionTime - minReactionTime));
 			});
-            double reactionDistance = court == 0 ? options.getDodgeRangeTeam2() : options.getDodgeRangeTeam1();
+			double reactionDistance = court == 0 ? options.getDodgeRangeTeam2() : options.getDodgeRangeTeam1();
 
 			rivalTeam.stream().filter(pele ->
-					pele.distanceToTrajectory(ball.getPosition(), target) < reactionDistance
-			).forEach(menem -> {
-                Pair escapeRouteVersor = target.clone();
-                escapeRouteVersor.substract(ball.getPosition());
-                escapeRouteVersor.tangent();
-                escapeRouteVersor.normalize();
-                escapeRouteVersor.multiply(reactionDistance);
-				escapeRouteVersor.add(menem.getPosition());
-                menem.updateTarget(escapeRouteVersor);
-            });
+					pele.distanceToTrajectory(ball.getPosition(), destination) < reactionDistance
+			).forEach(p -> {
+				Pair escapeRouteVersor = destination.clone();
+				escapeRouteVersor = escapeRouteVersor.substract(ball.getPosition());
+				escapeRouteVersor = escapeRouteVersor.tangent();
+				escapeRouteVersor.normalize();
+				escapeRouteVersor.multiply(reactionDistance);
+				if(random.nextInt(teams.size()) % 2 == 0) {	escapeRouteVersor.multiply(-1); }
+				escapeRouteVersor.add(p.getPosition());
+				p.updateTarget(escapeRouteVersor);
+			});
 
 		} else {
 			ball.updateVelocity(0, 0);
@@ -183,6 +187,7 @@ public class SocialModelSimulator {
 			team.forEach(p -> {
 				p.setReactionTime(0);
 				p.updateTarget(null);
+				p.updateVelocity(0,0);
 			});
 			team.stream().min(Comparator.comparing(ball::dist2)).ifPresent(nearest -> {
 				nearest.updateTarget(ball.getPosition());
@@ -207,7 +212,7 @@ public class SocialModelSimulator {
 		return teams.stream().mapToInt(List::size).min().orElse(0);
 	}
 
-	
+
 	public void saveFiles(){
 		deletedPlayerOutputStats.forEach(OutputStat::writeFile);
 	}
