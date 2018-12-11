@@ -124,7 +124,7 @@ public class SocialModelSimulator {
 			team.forEach(p -> {
 				p.setReactionTime(0);
 				p.updateTarget(null);
-				p.updateVelocity(0,0);
+//				p.updateVelocity(0,0);
 			});
 			team.stream().min(Comparator.comparing(ball::dist2)).ifPresent(nearest -> {
 				nearest.updateTarget(ball.getPosition());
@@ -187,7 +187,7 @@ public class SocialModelSimulator {
 			team.forEach(p -> {
 				p.setReactionTime(0);
 				p.updateTarget(null);
-				p.updateVelocity(0,0);
+//				p.updateVelocity(0,0);
 			});
 			team.stream().min(Comparator.comparing(ball::dist2)).ifPresent(nearest -> {
 				nearest.updateTarget(ball.getPosition());

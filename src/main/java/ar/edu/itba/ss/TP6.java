@@ -73,7 +73,7 @@ public class TP6 {
 		OutputStat diffPeopleFile = new OutputStat("diffPeople-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
 		OutputStat maxPressureFile = new OutputStat("maxPressure-"+desiredVelocityStr+"dVel-"+loop+"time.txt");
 
-		Ball ball = new Ball(666, 2.5, 2.5,0, 0, 1, 0.2);
+		Ball ball = new Ball(666, 5, 5,0, 0, 1, 0.2);
 		ball.state = BallState.StandByAtLeft;
 
 		List<List<Player>> teams = generateTeams(ball);

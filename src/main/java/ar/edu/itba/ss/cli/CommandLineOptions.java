@@ -9,23 +9,23 @@ public class CommandLineOptions {
 
     @Option(name = "-n", aliases = { "--players-per-team" },
             usage = "Number of players for each team")
-    private int N = 20;
+    private int N = 30;
 
     @Option(name = "-m", aliases = { "--mass" },
             usage = "input file for the particles")
     private double mass = 80;
 
     @Option(name = "--speed", usage = "Speed")
-    private double speed = 14;
+    private double speed = 10;
 
     @Option(name = "--ball-speed", usage = "Speed")
     private double ballSpeed = 10;
 
     @Option(name = "--dodge-range-team-1", usage = "Dodge range from the trajectory line for team 1")
-    private double dodgeRangeTeam1 = 1;
+    private double dodgeRangeTeam1 = 1.5;
 
     @Option(name = "--dodge-range-team-2", usage = "Dodge range from the trajectory line for team 2")
-    private double dodgeRangeTeam2 = 1;
+    private double dodgeRangeTeam2 = 1.5;
 
     @Option(name = "--min-reaction-time-team-1")
     private double minReactionTime1 = 0;
@@ -34,10 +34,10 @@ public class CommandLineOptions {
     private double minReactionTime2 = 0;
 
     @Option(name = "--max-reaction-time-team-1")
-    private double maxReactionTime1 = 0.1;
+    private double maxReactionTime1 = 0.3;
 
     @Option(name = "--max-reaction-time-team-2")
-    private double maxReactionTime2 = 0.1;
+    private double maxReactionTime2 = 0.3;
 
     @Option(name = "-b", usage = "Ball count")
     private double ballCount = 1;
@@ -55,7 +55,7 @@ public class CommandLineOptions {
     private double dt = 1e-4;
 
     @Option(name = "-f", aliases = { "--fps" }, usage = "frames per second")
-    private double fps = 60;
+    private double fps = 30;
 
     @Option(name = "-l", aliases = {"--length", "-L"}, usage = "The height of the container")
     private double lenght = 10;
