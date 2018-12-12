@@ -5,7 +5,7 @@ public class Ball extends Particle{
     public  BallState state = BallState.AttackingLeft;
 
     public Ball(int id, double x, double y, double vx, double vy, double m, double r) {
-        super(id, x, y, vx, vy, m, r,-1);
+        super(id, x, y, vx, vy, m, r,2);
     }
 
     public void changeState() {

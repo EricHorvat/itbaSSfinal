@@ -103,7 +103,7 @@ public abstract class Particle {
 	}
 
 	public String getInfo() {
-		return getId() + " " + getX() + " " + getY() + " " + getRadius();
+		return getId() + " " + getX() + " " + getY() + " " + getRadius() + "  " + getSpeed() * 100 + " " + getTeam();
 	}
 
 	public void collision(){}
