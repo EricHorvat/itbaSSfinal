@@ -8,6 +8,29 @@ def parse_filee(filename):
         return json.loads(file.readline())
 
 
+def averaging_not_same_size(array_of_array):
+    maxx = len(array_of_array[0])
+    minn = maxx
+    for arr in array_of_array:
+        maxx = maxx if maxx > len(arr) else len(arr)
+        minn = minn if minn > len(arr) else len(arr)
+
+    aux = []
+    for i in range(0,maxx):
+        aux.append([])
+        for arr in array_of_array:
+            if len(arr) > i:
+                aux[-1].append(arr[i])
+
+    avgans = []
+    stdans = []
+    for arr in aux:
+        avgans.append(np.average(np.asarray(arr)))
+        stdans.append(np.std(np.asarray(arr)))
+
+    return np.asarray(avgans),np.asarray(stdans)
+
+
 def plot_surfacee(team_outputs_by_run, runs, n):
 
     oavg = []
@@ -27,72 +50,84 @@ def plot_surfacee(team_outputs_by_run, runs, n):
 
     fig = plt.figure()
     ax = plt.gca()
-    for winner in winners:
-        ax.plot(np.arange(0,len(winner)),winner)
+    colors=['r','b','y','g','c']
+    for index, winner in enumerate(winners):
+        ax.errorbar(range(len(winner)), winner, fmt=colors[index]+"o")
+        ax.plot(np.arange(0,len(winner)),winner, colors[index])
     plt.xlabel("Particulas eliminadas")
     plt.ylabel("Tiempo [s]")
     plt.savefig('winner.png')
     fig = plt.figure()
     ax = plt.gca()
-    for loser in losers:
-        ax.plot(np.arange(0,n),loser)
+    for index, loser in enumerate(losers):
+        ax.errorbar(range(len(loser)), loser, fmt=colors[index]+"o")
+        ax.plot(np.arange(0,n),loser,colors[index])
     plt.xlabel("Particulas eliminadas")
     plt.ylabel("Tiempo [s]")
     plt.savefig('loser.png')
     fig = plt.figure()
     ax = plt.gca()
-    for teams in teams_s:
-        ax.plot(np.arange(0,len(teams)),teams)
+    for index, teams in enumerate(teams_s):
+        ax.errorbar(range(len(teams)), teams, fmt=colors[index]+"o")
+        ax.plot(np.arange(0,len(teams)),teams, colors[index])
     plt.xlabel("Particulas eliminadas")
     plt.ylabel("Tiempo [s]")
     plt.savefig('teams.png')
 
-    winners_arr = np.array(np.asarray(winners))
     losers_arr = np.array(np.asarray(losers))
-    teams_arr = np.array(np.asarray(teams_s))
 
-    winners_arr_avg = np.average(winners_arr, axis=0)
-    winners_arr_err = np.std(winners_arr, axis=0)
+    winners_arr_avg ,winners_arr_err = averaging_not_same_size(winners)
     losers_arr_avg = np.average(losers_arr, axis=0)
     losers_arr_err = np.std(losers_arr, axis=0)
-    teams_arr_avg = np.average(teams_s, axis=0)
-    teams_arr_err = np.std(teams_s, axis=0)
+    teams_arr_avg ,teams_arr_err = averaging_not_same_size(teams_s)
+    #teams_arr_avg = np.average(teams_s, axis=0)
+    #teams_arr_err = np.std(teams_s, axis=0)
 
     fig = plt.figure()
     ax = plt.gca()
-    ax.plot(winners_arr_avg)
-    ax.plot(winners_arr_avg + winners_arr_err, linestyle='--', color="r")
-    ax.plot(winners_arr_avg - winners_arr_err, linestyle='--', color="r")
+    ax.errorbar(range(len(winners_arr_avg)),winners_arr_avg,yerr = winners_arr_err,fmt="o")
+    plt.xlabel("Particulas eliminadas")
+    plt.ylabel("Tiempo [s]")
     plt.savefig('winner_err.png')
 
     fig = plt.figure()
     ax = plt.gca()
-    ax.plot(losers_arr_avg)
-    ax.plot(losers_arr_avg + losers_arr_err, linestyle='--', color="r")
-    ax.plot(losers_arr_avg - losers_arr_err, linestyle='--', color="r")
+    #ax.plot(losers_arr_avg)
+    ax.errorbar(range(len(losers_arr_avg)),losers_arr_avg,yerr = losers_arr_err,fmt="o")
+    #ax.plot(losers_arr_avg + losers_arr_err, linestyle='--', color="r")
+    #ax.plot(losers_arr_avg - losers_arr_err, linestyle='--', color="r")
+    plt.xlabel("Particulas eliminadas")
+    plt.ylabel("Tiempo [s]")
     plt.savefig('loser_err.png')
 
     fig = plt.figure()
     ax = plt.gca()
-    ax.plot(teams_arr_avg)
-    ax.plot(teams_arr_avg + teams_arr_err, linestyle='--', color="r")
-    ax.plot(teams_arr_avg - teams_arr_err, linestyle='--', color="r")
+    #ax.plot(teams_arr_avg)
+    ax.errorbar(range(len(teams_arr_avg)), teams_arr_avg, yerr=teams_arr_err, fmt="o")
+    #ax.plot(teams_arr_avg + teams_arr_err, linestyle='--', color="r")
+    #ax.plot(teams_arr_avg - teams_arr_err, linestyle='--', color="r")
+    plt.xlabel("Particulas eliminadas")
+    plt.ylabel("Tiempo [s]")
     plt.savefig('teams_err.png')
 
 
 def mains():
-    runs = 2
-    n = 40
+    runs = 5
+    n = 10
+
 
     team_outputs_by_run = []
-    for run in range(0,runs):
-        team_outputs = []
-        for team in range(0,3):
-            team_outputs.append(parse_filee("outputTeam" + str("%d" % team) +
-                                "-"+ str(run) + "time" +
-                                ".txt"))
-        team_outputs_by_run.append(team_outputs)
+    for run in range(1, runs + 1):
 
+        print("r" + str(run))
+        team_outputs = []
+        for team in range(0, 3):
+            print(team)
+            team_outputs.append(parse_filee("baseRuns/" +
+                                            str(run) + "/" +
+                                            "outputTeam" + str("%d" % team) +
+                                            ".txt"))
+        team_outputs_by_run.append(team_outputs)
     plot_surfacee(team_outputs_by_run, runs, n)
 
 

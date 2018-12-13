@@ -23,35 +23,39 @@ def plot_surfacee(team_outputs_by_run_by_parameter, runs, parameter_values):
             times[parameter_index].append(team_outputs[2][-1])
 
     times = np.asarray(times)
-    times_avg = np.average(times, axis=0)
-    times_err = np.std(times, axis=0)
+    times_avg = np.average(times, axis=1)
+    times_err = np.std(times, axis=1)
 
     fig = plt.figure()
     ax = plt.gca()
-    ax.errorbar(np.array(parameter_values), times_avg, yerr=times_err, fmt='o')
-    ax.errorbar(np.array(parameter_values), times_avg, fmt='o')
-    plt.xlabel("PARAMETRO")
+    ax.errorbar(np.array(parameter_values) * np.sqrt(2), times_avg, yerr=times_err, fmt='o')
+    ax.errorbar(np.array(parameter_values) * np.sqrt(2), times_avg, fmt='o')
+    plt.xlabel("Jugadores")
     plt.ylabel("Tiempo [s]")
     plt.savefig('finalTime.png')
     plt.show()
 
 
 def mains():
-    runs = 2
-    varying_parameter_values = [0,1]
+    runs = 5
+    varying_parameter_values = [0.05,0.1,0.15,0.2,0.25]
 
     team_outputs_by_run_by_parameter = []
     for varying_parameter_val in varying_parameter_values:
 
         team_outputs_by_run = []
+        print("v" + str(varying_parameter_val))
+        for run in range(1,runs+1):
 
-        for run in range(0,runs):
+            print("r" + str(run))
             team_outputs = []
             for team in range(0,3):
-                team_outputs.append(parse_filee("outputTeam" + str("%d" % team) +
-                                    "-" + str(run) + "time" +
-                                    "-" + str(varying_parameter_val) +
-                                    ".txt"))
+                print(team)
+                team_outputs.append(parse_filee("precision/" +
+                                                str(varying_parameter_val) + "/" +
+                                                str(run) + "/" +
+                                                "outputTeam" + str("%d" % team) +
+                                                ".txt"))
             team_outputs_by_run.append(team_outputs)
         team_outputs_by_run_by_parameter.append(team_outputs_by_run)
 
